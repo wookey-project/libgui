@@ -12,18 +12,20 @@
 #include "api/gui_pin.h"
 
 // images
-#include "img/smiley.h"
-#include "img/settings.h"
-#include "img/wipe.h"
-#include "img/lock.h"
-#include "img/unlock.h"
-#include "img/state.h"
-#include "img/pin.h"
-#include "img/petpin.h"
-#include "img/petname.h"
-#include "img/return.h"
-#include "img/massstorage.h"
-#include "img/smartcard.h"
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
+# include "img/smiley.h"
+# include "img/settings.h"
+# include "img/wipe.h"
+# include "img/lock.h"
+# include "img/unlock.h"
+# include "img/state.h"
+# include "img/pin.h"
+# include "img/petpin.h"
+# include "img/petname.h"
+# include "img/return.h"
+# include "img/massstorage.h"
+# include "img/smartcard.h"
+#endif
 
 /* menu background colors (in RGB mode) */
 #define MENU_STATUS_BG    53,  88, 157
@@ -236,39 +238,63 @@ void draw_menu(void)
             draw_menubox(0,(screen_width/2),0,200,
                     "status\0",
                     MENU_STATUS_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     smiley_colormap,
                     smiley,
                     sizeof(smiley));
+#else
+                    0,0,0);
+#endif
             draw_menubox((screen_width/2),screen_width,0,100,
                     "setting\0",
                     MENU_SETTINGS_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     settings_colormap,
                     settings,
                     sizeof(settings));
+#else
+                    0,0,0);
+#endif
             draw_menubox((screen_width/2),screen_width,100,200,
                     "wipe\0",
                     MENU_WIPE_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     wipe_colormap,
                     wipe,
                     sizeof(wipe));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,(screen_width/3),200,300,
                     "lck\0",
                     MENU_LOCK_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     nlock_colormap,
                     nlock,
                     sizeof(nlock));
+#else
+                    0,0,0);
+#endif
             draw_menubox((screen_width/3),(2*screen_width/3),200,300,
                     "unlck\0",
                     MENU_LOCK_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     unlock_colormap,
                     unlock,
                     sizeof(unlock));
+#else
+                    0,0,0);
+#endif
             draw_menubox((2*screen_width/3),screen_width,200,300,
                     "state\0",
                     MENU_STATE_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     state_colormap,
                     state,
                     sizeof(state));
+#else
+                    0,0,0);
+#endif
             break;
         }
         case MENU_STATUS:
@@ -335,9 +361,13 @@ void draw_menu(void)
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
                     133,135,132,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
                     sizeof(returning));
+#else
+                    0,0,0);
+#endif
             break;
 
         }
@@ -361,9 +391,13 @@ void draw_menu(void)
             draw_menubox(95,145,240,290,
                     0,
                     133,135,132,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
                     sizeof(returning));
+#else
+                    0,0,0);
+#endif
             break;
         }
 
@@ -373,27 +407,43 @@ void draw_menu(void)
             draw_menubox(0,screen_width,0,90,
                     "set pet pin\0",
                     0,159,155,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     petpin_colormap,
                     petpin,
                     sizeof(petpin));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,90,180,
                     "set pet name\0",
                     0,159,155,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     petname_colormap,
                     petname,
                     sizeof(petname));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,180,270,
                     "set user pin\0",
                     0,159,155,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     userpin_colormap,
                     userpin,
                     sizeof(userpin));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
                     133,135,132,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
                     sizeof(returning));
+#else
+                    0,0,0);
+#endif
             break;
 
         }
@@ -402,27 +452,43 @@ void draw_menu(void)
             draw_menubox(0,screen_width,0,90,
                     "Wipe auth keys\0",
                     231,92,76,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     wipe_colormap,
                     wipe,
                     sizeof(wipe));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,90,180,
                     "Wipe smartcard\0",
                     231,92,76,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     smartcard_colormap,
                     smartcard,
                     sizeof(smartcard));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,180,270,
                     "Wipe massstorage\0",
                     231,92,76,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     massstorage_colormap,
                     massstorage,
                     sizeof(massstorage));
+#else
+                    0,0,0);
+#endif
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
                     133,135,132,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
                     sizeof(returning));
+#else
+                    0,0,0);
+#endif
             break;
 
         }

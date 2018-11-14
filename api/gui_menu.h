@@ -10,7 +10,6 @@ enum authentication_mode {
   LITE_AUTHENTICATION_MODE
 };
 
-
 typedef enum {
     BOX_STATUS,
     BOX_SETTINGS,

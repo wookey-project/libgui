@@ -9,4 +9,25 @@ config USR_LIB_GUI_CFLAGS
   string
   default " -I../../libs/gui/api " if USR_LIB_GUI
 
+if USR_LIB_GUI
 
+menu "libgui configuration"
+
+choice USR_LIB_GUI_MODE
+  prompt "GUI mode"
+  default USR_LIB_GUI_MODE_FULL
+    config USR_LIB_GUI_MODE_FULL
+      bool "Full graphical mode with icons"
+      ---help---
+      Add support for full graphical mode with iconset.
+      More pretty but bigger.
+     config USR_LIB_GUI_MODE_LITE
+      bool "Lite graphical mode (no icon)"
+      ---help---
+      Add support for lite graphical mode without icon.
+      Usefull for smaller systems or apps.
+endchoice
+
+endmenu
+
+endif
