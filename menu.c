@@ -33,6 +33,7 @@
 #define MENU_WIPE_BG     231,  92,  76
 #define MENU_LOCK_BG     141,  78, 159
 #define MENU_STATE_BG     49, 173,  89
+#define RETURN_BG        133, 135, 132
 
 
 
@@ -147,13 +148,13 @@ t_box get_box(int x, int y)
 
         case MENU_SETTINGS:
         {
-            if (x > 0 && x < 240 && y > 0 && y < 90) {
+            if (x > 0 && x < screen_width && y > 0 && y < 90) {
                 box = BOX_SET_PETPIN;
             }
-            if (x > 0 && x < 240 && y > 90 && y < 180) {
+            if (x > 0 && x < screen_width && y > 90 && y < 180) {
                 box = BOX_SET_PETNAME;
             }
-            if (x > 0 && x < 240 && y > 180 && y < 270) {
+            if (x > 0 && x < screen_width && y > 180 && y < 270) {
                 box = BOX_SET_USERPIN;
             }
             if (x > 0 && x < screen_width && y > (screen_height - 50) && y < screen_height) {
@@ -301,9 +302,9 @@ void draw_menu(void)
         {
             cury = 0;
             // print status information
-            tft_fill_rectangle(0,screen_width,0,(screen_height - 50),53,88,157);
+            tft_fill_rectangle(0,screen_width,0,(screen_height - 50),MENU_STATUS_BG);
             tft_setfg(255,255,255);
-            tft_setbg(53,88,157);
+            tft_setbg(MENU_STATUS_BG);
             tft_set_cursor_pos(0,cury);
             tft_puts("crypto:");
             cury += font_height/2;
@@ -360,7 +361,7 @@ void draw_menu(void)
             // return button
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
-                    133,135,132,
+                    RETURN_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
@@ -390,7 +391,7 @@ void draw_menu(void)
 #
             draw_menubox(95,145,240,290,
                     0,
-                    133,135,132,
+                    RETURN_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
@@ -406,7 +407,7 @@ void draw_menu(void)
         {
             draw_menubox(0,screen_width,0,90,
                     "set pet pin\0",
-                    0,159,155,
+                    MENU_SETTINGS_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     petpin_colormap,
                     petpin,
@@ -416,7 +417,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,90,180,
                     "set pet name\0",
-                    0,159,155,
+                    MENU_SETTINGS_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     petname_colormap,
                     petname,
@@ -426,7 +427,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,180,270,
                     "set user pin\0",
-                    0,159,155,
+                    MENU_SETTINGS_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     userpin_colormap,
                     userpin,
@@ -436,7 +437,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
-                    133,135,132,
+                    RETURN_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
@@ -451,7 +452,7 @@ void draw_menu(void)
         {
             draw_menubox(0,screen_width,0,90,
                     "Wipe auth keys\0",
-                    231,92,76,
+                    MENU_WIPE_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     wipe_colormap,
                     wipe,
@@ -461,7 +462,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,90,180,
                     "Wipe smartcard\0",
-                    231,92,76,
+                    MENU_WIPE_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     smartcard_colormap,
                     smartcard,
@@ -471,7 +472,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,180,270,
                     "Wipe massstorage\0",
-                    231,92,76,
+                    MENU_WIPE_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     massstorage_colormap,
                     massstorage,
@@ -481,7 +482,7 @@ void draw_menu(void)
 #endif
             draw_menubox(0,screen_width,screen_height-50,screen_height,
                     0,
-                    133,135,132,
+                    RETURN_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     returning_colormap,
                     returning,
