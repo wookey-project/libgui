@@ -17,12 +17,14 @@ typedef enum {
     BOX_LOCK,
     BOX_UNLOCK,
     BOX_STATE,
+    BOX_DFU,
     BOX_SET_PETPIN,
     BOX_SET_PETNAME,
     BOX_SET_USERPIN,
     BOX_WIPE_AUTHKEYS,
     BOX_WIPE_SMARTCARD,
     BOX_WIPE_STORAGE,
+    BOX_START_DFU,
     BOX_RETURN,
     BOX_UNDEFINED
 } t_box;
@@ -44,7 +46,7 @@ typedef struct {
 } cb_menu_callbacks_t;
 
 
-uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks);
+uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks, bool fw_mode);
 
 void menu_get_events(void);
 

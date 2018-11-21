@@ -25,6 +25,7 @@
 # include "img/return.h"
 # include "img/massstorage.h"
 # include "img/smartcard.h"
+# include "img/dfu.h"
 #endif
 
 /* menu background colors (in RGB mode) */
@@ -33,9 +34,11 @@
 #define MENU_WIPE_BG     231,  92,  76
 #define MENU_LOCK_BG     141,  78, 159
 #define MENU_STATE_BG     49, 173,  89
+#define MENU_DFU_BG      252, 225,  59
 #define RETURN_BG        133, 135, 132
 
 
+uint8_t fw_mode = true;
 
 extern const int font_width;
 extern const int font_height;
@@ -49,7 +52,8 @@ typedef enum {
     MENU_SETTINGS = 1,
     MENU_WIPE     = 2,
     MENU_STATUS   = 3,
-    MENU_FAILURE  = 4
+    MENU_FAILURE  = 4,
+    MENU_DFU      = 5
 } t_current_menu;
 
 /* Fail message management */
@@ -83,7 +87,7 @@ static cb_menu_callbacks_t menu_cb = { 0 };
 /*
  * Initialize the menu configuration.
  */
-uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks)
+uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks, bool menu_mode)
 {
   if (!callbacks) {
       goto err;
@@ -95,6 +99,7 @@ uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callback
   /* set screen size */
   screen_width = width;
   screen_height = height;
+  fw_mode = menu_mode;
 err:
       return 1;
 }
@@ -125,7 +130,11 @@ t_box get_box(int x, int y)
                 box = BOX_SETTINGS;
             }
             if (x > (screen_width / 2) && x < 240 && y > 100 && y < 200) {
-                box = BOX_WIPE;
+                if (fw_mode == true) {
+                  box = BOX_WIPE;
+                } else {
+                  box = BOX_DFU;
+                }
             }
             if (x > 0 && x < (screen_width / 3) && y > 200 && y < 300) {
                 box = BOX_LOCK;
@@ -162,6 +171,17 @@ t_box get_box(int x, int y)
             }
             break;
         }
+        case MENU_DFU:
+        {
+            if (x > 0 && x < screen_width && y > 0 && y < 270) {
+                box = BOX_START_DFU;
+            }
+            if (x > 0 && x < screen_width && y > (screen_height - 50) && y < screen_height) {
+                box = BOX_RETURN;
+            }
+            break;
+        }
+
         case MENU_WIPE:
         {
             if (x > 0 && x < screen_width && y > 0 && y < 90) {
@@ -256,6 +276,7 @@ void draw_menu(void)
 #else
                     0,0,0);
 #endif
+                    if (fw_mode == true) {
             draw_menubox((screen_width/2),screen_width,100,200,
                     "wipe\0",
                     MENU_WIPE_BG,
@@ -266,6 +287,18 @@ void draw_menu(void)
 #else
                     0,0,0);
 #endif
+                    } else {
+            draw_menubox((screen_width/2),screen_width,100,200,
+                    "dfu\0",
+                    MENU_DFU_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
+                    dfu_colormap,
+                    dfu,
+                    sizeof(dfu));
+#else
+                    0,0,0);
+#endif
+                    }
             draw_menubox(0,(screen_width/3),200,300,
                     "lck\0",
                     MENU_LOCK_BG,
@@ -493,6 +526,31 @@ void draw_menu(void)
             break;
 
         }
+        case MENU_DFU:
+        {
+            draw_menubox(0,screen_width,0,270,
+                    "Start DFU\0",
+                    MENU_DFU_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
+                    dfu_colormap,
+                    dfu,
+                    sizeof(dfu));
+#else
+                    0,0,0);
+#endif
+            draw_menubox(0,screen_width,screen_height-50,screen_height,
+                    0,
+                    RETURN_BG,
+#if CONFIG_USR_LIB_GUI_MODE_FULL 
+                    returning_colormap,
+                    returning,
+                    sizeof(returning));
+#else
+                    0,0,0);
+#endif
+            break;
+        }
+
         default: {
             break;
         }
@@ -583,6 +641,15 @@ void menu_get_events(void)
                         nextmenu = MENU_WIPE;
                         break;
                     }
+                case BOX_DFU:
+                    {
+#if MENU_DEBUG
+                        printf("[touched] box wipe pushed !\n");
+#endif
+                        nextmenu = MENU_DFU;
+                        break;
+                    }
+
                 case BOX_LOCK:
                     {
 #if MENU_DEBUG
@@ -660,6 +727,14 @@ void menu_get_events(void)
                         }
                         break;
                     }
+                case BOX_START_DFU:
+                    {
+#if MENU_DEBUG
+                        printf("[touched] box start dfu pushed !\n");
+#endif
+                        break;
+                    }
+
                 default:
                     {
                         break;
