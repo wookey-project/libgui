@@ -82,7 +82,11 @@ static int screen_width = 0;
 static int screen_height = 0;
 
 /* callbacks list, registered by the upper layer when caller menu_init() */
-static cb_menu_callbacks_t menu_cb = { 0 };
+static cb_menu_callbacks_t menu_cb = {
+    .handle_settings = 0,
+    .handle_auth = 0,
+    .handle_pin_cmd = 0
+};
 
 /*
  * Initialize the menu configuration.

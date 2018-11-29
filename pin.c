@@ -259,9 +259,10 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c, 
 			uint8_t r, uint8_t g, uint8_t b);
 
-uint8_t pin_request_string_validation(const char *msg, const char *string, uint8_t string_len)
+uint8_t pin_request_string_validation(const char *msg,
+                                      const char *string,
+                                      uint8_t string_len __attribute__((unused)) /* TODO: future use */)
 {
-  string_len = string_len;
   tft_setfg(200,200,200);
   tft_setbg(5,0,5);
   tft_set_cursor_pos(0,29);
@@ -413,7 +414,7 @@ static void pin_highlight_case(int x1,int x2, int y1, int y2, char *c)
 
 
 void pin_request_string(const char *title,
-                        uint32_t    title_len,
+                        uint32_t    title_len __attribute__((unused)) /* TODO: future use */,
                         int x1,int x2, int y1, int y2,
                         char *string, uint8_t maxlen)
 {
@@ -422,7 +423,6 @@ void pin_request_string(const char *title,
   int hsize = (x2-x1-3*hspace)/3;
   int vsize = (y2-y1-4*vspace)/5;
   uint8_t offset = 0;
-  title_len = title_len;
 
   tft_setfg(200,200,200);
   tft_setbg(5,0,5);
