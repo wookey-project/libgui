@@ -38,7 +38,7 @@
 #define RETURN_BG        133, 135, 132
 
 
-uint8_t fw_mode = true;
+uint8_t fw_mode = 0;
 
 extern const int font_width;
 extern const int font_height;
@@ -91,7 +91,7 @@ static cb_menu_callbacks_t menu_cb = {
 /*
  * Initialize the menu configuration.
  */
-uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks, bool menu_mode)
+uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callbacks, uint8_t menu_mode)
 {
   if (!callbacks) {
       goto err;
@@ -134,7 +134,7 @@ t_box get_box(int x, int y)
                 box = BOX_SETTINGS;
             }
             if (x > (screen_width / 2) && x < 240 && y > 100 && y < 200) {
-                if (fw_mode == true) {
+                if (fw_mode == 0) {
                   box = BOX_WIPE;
                 } else {
                   box = BOX_DFU;
@@ -280,7 +280,7 @@ void draw_menu(void)
 #else
                     0,0,0);
 #endif
-                    if (fw_mode == true) {
+                    if (fw_mode == 0) { /* MODE_FW */
             draw_menubox((screen_width/2),screen_width,100,200,
                     "wipe\0",
                     MENU_WIPE_BG,
