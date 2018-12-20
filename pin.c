@@ -599,7 +599,6 @@ void pin_request_string(const char *title,
   }
 }
 
-
 uint8_t pin_request_digits(const char *title,
              uint32_t    title_len __attribute__((unused)),
              int x1,int x2, int y1, int y2,

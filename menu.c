@@ -85,7 +85,8 @@ static int screen_height = 0;
 static cb_menu_callbacks_t menu_cb = {
     .handle_settings = 0,
     .handle_auth = 0,
-    .handle_pin_cmd = 0
+    .handle_pin_cmd = 0,
+    .handle_externals = 0
 };
 
 /*
@@ -100,6 +101,7 @@ uint8_t menu_init(uint32_t width, uint32_t height, cb_menu_callbacks_t *callback
   menu_cb.handle_settings = callbacks->handle_settings;
   menu_cb.handle_auth     = callbacks->handle_auth;
   menu_cb.handle_pin_cmd  = callbacks->handle_pin_cmd;
+  menu_cb.handle_externals  = callbacks->handle_externals;
   /* set screen size */
   screen_width = width;
   screen_height = height;
@@ -533,7 +535,7 @@ void draw_menu(void)
         case MENU_DFU:
         {
             draw_menubox(0,screen_width,0,270,
-                    "Start DFU\0",
+                    "DFU in progress\0",
                     MENU_DFU_BG,
 #if CONFIG_USR_LIB_GUI_MODE_FULL 
                     dfu_colormap,
@@ -586,6 +588,7 @@ void menu_get_events(void)
 
         /* Wait loop for touchscreen to be touched */
         while (!(touch_refresh_pos(),touch_is_touched())) {
+            /* handling external events (IPC...) */
             touch_enable_exti();
             if (menu == MENU_STATUS) {
                 //printf("[not touched] main menu\n");
@@ -610,6 +613,7 @@ void menu_get_events(void)
         //Follow the motion on the screen
         while (touch_refresh_pos(),touch_is_touched())
         {
+
 
             int posx,posy;
             //touch_refresh_pos();
@@ -647,12 +651,19 @@ void menu_get_events(void)
                     }
                 case BOX_DFU:
                     {
-#if MENU_DEBUG
-                        printf("[touched] box wipe pushed !\n");
+#if 1
+                        printf("[touched] box dfu pushed !\n");
 #endif
+                        // This is not a good place, as this request the user to touch
+                        // the screen...
+                        if (menu_cb.handle_externals) {
+                            menu_cb.handle_externals();
+                        }
+                        printf("DFU check done, going to DFU menu\n");
                         nextmenu = MENU_DFU;
                         break;
                     }
+
 
                 case BOX_LOCK:
                     {
@@ -733,9 +744,17 @@ void menu_get_events(void)
                     }
                 case BOX_START_DFU:
                     {
+// the screen...
+                        if (menu_cb.handle_externals) {
+                            menu_cb.handle_externals();
+                        }
 #if MENU_DEBUG
                         printf("[touched] box start dfu pushed !\n");
 #endif
+                        /* we go back to mainmenu only when receiving end
+                         * of download... */
+                        nextmenu = MENU_DFU;
+
                         break;
                     }
 

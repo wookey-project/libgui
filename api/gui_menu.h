@@ -38,11 +38,13 @@ typedef enum {
 typedef uint8_t (*cb_menu_handle_settings_req_t)(t_box signal);
 typedef uint8_t (*cb_menu_handle_authentication_t)(enum authentication_mode authmode);
 typedef uint8_t (*cb_menu_handle_pin_cmd_request_t)(void);
+typedef void    (*cb_menu_handle_externals_t)(void);
 
 typedef struct {
     cb_menu_handle_settings_req_t       handle_settings;
     cb_menu_handle_authentication_t     handle_auth;
     cb_menu_handle_pin_cmd_request_t    handle_pin_cmd;
+    cb_menu_handle_externals_t          handle_externals;
 } cb_menu_callbacks_t;
 
 
