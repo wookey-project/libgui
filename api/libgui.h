@@ -79,4 +79,8 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
 
 void gui_get_events(void);
 
+void gui_lock_touch(void);
+
+void gui_unlock_touch(void);
+
 #endif/*!MENU2_H_*/

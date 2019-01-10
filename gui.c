@@ -30,6 +30,7 @@ static volatile menu_desc_t default_menu = 0;
 
 cb_external_events external_events_cb = 0;
 
+static bool touch_locked = false;
 
 void gui_init(uint16_t width, uint16_t height, cb_external_events ext_events_cb)
 {
@@ -206,16 +207,6 @@ static uint16_t gui_get_tile_height(tile_t *tile)
             return TILE_HEIGHT * 3;
     }
     return 0;
-}
-
-gui_error_t gui_set_menu(menu_desc_t menu)
-{
-    if (gui_menu_exists(menu)) {
-
-        return GUI_ERR_INVAL;
-    }
-    current_menu_tmp = menu;
-    return GUI_ERR_NONE;
 }
 
 
@@ -441,7 +432,9 @@ void gui_get_events(void)
     while(1)
     {
         draw_gui();
-        touch_read_X_DFR();/* Ensures that PenIRQ is enabled */
+        if (!touch_locked) {
+          touch_read_X_DFR();/* Ensures that PenIRQ is enabled */
+        }
         /*
          * Between touch_read_X_DFR and touch_is_touched, we need to wait a little
          * or touch_is_touched() will return an invalid value
@@ -454,7 +447,9 @@ void gui_get_events(void)
             if (external_events_cb) {
                 external_events_cb();
             }
-            touch_enable_exti();
+            if (!touch_locked) {
+                touch_enable_exti();
+            }
             sys_yield();
         }
         //Follow the motion on the screen
@@ -470,4 +465,27 @@ void gui_get_events(void)
         current_menu = current_menu_tmp;
     }
     return;
+}
+
+gui_error_t gui_set_menu(menu_desc_t menu)
+{
+    if (!gui_menu_exists(menu)) {
+
+        printf("you try to set an unknown menu!\n");
+        return GUI_ERR_INVAL;
+    }
+    current_menu = menu;
+    current_menu_tmp = menu;
+    draw_gui();
+    return GUI_ERR_NONE;
+}
+
+void gui_lock_touch(void)
+{
+    touch_locked = true;
+}
+
+void gui_unlock_touch(void)
+{
+    touch_locked = false;
 }
