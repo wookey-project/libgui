@@ -532,6 +532,7 @@ static void gui_draw_tile(int x1, int x2, int y1, int y2,
 }
 
 
+
 /*
  * Draw the gui
  */
@@ -547,6 +548,13 @@ static void draw_gui(void)
     }
     gui_refresh_needed = false;
 }
+
+void gui_force_refresh(void)
+{
+    draw_gui();
+}
+
+
 
 /*
  * Gui events loop

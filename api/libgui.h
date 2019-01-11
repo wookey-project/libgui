@@ -89,6 +89,11 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_icon_t       *icon,
                               tile_desc_t       *tile_desc);
 
+/*
+ * synchronous and immediate gui refresh
+ */
+void gui_force_refresh(void);
+
 void gui_get_events(void);
 
 void gui_lock_touch(void);
