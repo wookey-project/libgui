@@ -32,6 +32,7 @@ typedef enum {
 } tile_width_t;
 
 typedef enum {
+    TILE_HEIGHT_HALF,
     TILE_HEIGHT_STD,
     TILE_HEIGHT_DOUBLE,
     TILE_HEIGHT_TRIPLE
@@ -58,6 +59,17 @@ typedef struct {
     const uint8_t *data;
 } tile_icon_t;
 
+typedef enum {
+    TXT_ALIGN_LEFT,
+    TXT_ALIGN_CENTER,
+    TXT_ALIGN_RIGHT
+} tile_text_align_t;
+
+typedef struct {
+    const char *      text;
+    tile_text_align_t align;
+} tile_text_t;
+
 typedef void (*cb_external_events)(void);
 
 void gui_init(uint16_t width, uint16_t height, cb_external_events external_events_cb);
@@ -73,7 +85,7 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_width_t       width,
                               tile_height_t      height,
                               tile_action_t     *action,
-                              const char        *text,
+                              tile_text_t       *text,
                               tile_icon_t       *icon,
                               tile_desc_t       *tile_desc);
 

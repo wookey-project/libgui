@@ -12,9 +12,11 @@
 #include "api/libgui.h"
 
 /* tile height is defined as 100 pixels */
-#define TILE_HEIGHT 80
+#define TILE_HEIGHT 90
 #define MAX_MENUS  10
 #define MAX_TILES  32
+
+#define TXT_MARGIN 5
 
 /* tft specific */
 extern const int font_width;
@@ -58,7 +60,7 @@ typedef struct {
     tile_height_t  height;
     tile_action_t  action;
     tile_icon_t    icon;
-    const char *   text;
+    tile_text_t    text;
     int            x_start;
     int            y_start;
     int            x_end;
@@ -199,6 +201,8 @@ static uint16_t gui_get_tile_width(tile_t *tile)
 static uint16_t gui_get_tile_height(tile_t *tile)
 {
     switch (tile->height) {
+        case TILE_HEIGHT_HALF:
+            return TILE_HEIGHT / 2;
         case TILE_HEIGHT_STD:
             return TILE_HEIGHT;
         case TILE_HEIGHT_DOUBLE:
@@ -218,7 +222,7 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_width_t       width,
                               tile_height_t      height,
                               tile_action_t     *action,
-                              const char        *text,
+                              tile_text_t       *text,
                               tile_icon_t       *icon,
                               tile_desc_t       *tile_desc)
 {
@@ -251,7 +255,7 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
 
     if (tile->height != TILE_HEIGHT_STD && tile->width != TILE_WIDTH_FULL)
     {
-        printf("[E] bigger height are supported only for full width tiles\n");
+        printf("[E] bigger or smaller height are supported only for full width tiles\n");
         goto err_inval;
     }
 
@@ -270,7 +274,11 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
             break;
     }
     /* just a reference here */
-    tile->text = text;
+    if (text) {
+        memcpy((void*)&tile->text, text, sizeof(tile_text_t));
+    } else {
+        tile->text.text = 0;
+    }
 
     /* calculating the tile position, depending on the menu */
     /* FIXME: this does not support insuffisent space by now */
@@ -284,6 +292,9 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
     tile->y_start = menu_list[tile->menu].lasty;
     tile->x_end   = menu_list[tile->menu].lastx + gui_get_tile_width(tile);
     switch (tile->height) {
+        case TILE_HEIGHT_HALF:
+            tile->y_end   = menu_list[tile->menu].lasty + TILE_HEIGHT / 2;
+            break;
         case TILE_HEIGHT_STD:
             tile->y_end   = menu_list[tile->menu].lasty + TILE_HEIGHT;
             break;
@@ -321,20 +332,147 @@ static void gui_draw_background(void)
 }
 
 
+/*
+ * \brief Draw the given text
+ *
+ * This function print a text, taking '\n' char as newline, in
+ * a given text area defined by the four coordinate given in argument
+ *
+ * \param text the text string
+ * \param bg   the text background
+ * \param fg   the text foreground
+ * \param x1   the text block left coor
+ * \param x2   the text block right coor
+ * \param y1   the text block top coor
+ * \param posy the text block vertical alignement
+ */
+static void gui_draw_text(tile_text_t *text,
+        tile_colormap_t  *bg,
+        tile_colormap_t  *fg,
+        int x1, int x2, int y1, int posy)
+{
+    const int char_width = font_width/128;
+      tft_setfg(fg->r,fg->g,fg->b);
+      tft_setbg(bg->r,bg->g,bg->b);
+      uint8_t chars_per_line;
+      uint8_t numlines;
+      int posx;
+      // 1) calculate the number of char per line in the case
+      // Here we define a 10 pixels margin width
+      chars_per_line=((x2 - x1 - 10)/char_width);
+      // 2) calculate the number of lines
+      numlines=(strlen(text->text)/chars_per_line) + 1;
+      // 3) calculate the position of the first line depending on
+      // the number of lines
+      //  ... the middle line...
+      for (uint8_t i = 1; i < numlines; ++i) {
+          // go up of 1 line
+          posy -= font_height/2;
+      }
+      uint32_t missing_chars = strlen(text->text);
+      uint32_t i = 0;
+      char line[chars_per_line + 1];
+      uint8_t current_chars_per_line = 0;
+      bool newline_found = false;
+
+      do {
+          memset(line, 0x0, chars_per_line + 1);
+          if (missing_chars > chars_per_line) {
+              current_chars_per_line = chars_per_line;
+
+              for (uint32_t offset = i; offset < i + chars_per_line; ++offset) {
+                  if (text->text[offset] == '\n') {
+                      printf("found newline, curr is now %d, i: %d, off: %d\n", offset - i, i, offset);
+                      current_chars_per_line = offset - i;
+                      newline_found = true;
+                  }
+              }
+
+              strncpy(line, &(text->text[i]), current_chars_per_line);
+              switch (text->align) {
+                  case TXT_ALIGN_LEFT:
+                      posx = x1 + TXT_MARGIN;
+                      break;
+                  case TXT_ALIGN_CENTER:
+                      posx=(x2-x1-current_chars_per_line*char_width)/2;
+                      break;
+                  case TXT_ALIGN_RIGHT:
+                      posx=(x2-x1-current_chars_per_line*char_width) - TXT_MARGIN;
+                      break;
+                  default:
+                      posx=(x2-x1-current_chars_per_line*char_width)/2;
+                      break;
+              }
+              tft_set_cursor_pos(x1+posx,posy+y1);
+              tft_puts((char*)line);
+              // print only a part of the string
+              missing_chars -= current_chars_per_line;
+              i += current_chars_per_line;
+
+              if (text->text[i] == '\n') {
+                  printf("dropping newline\n");
+                  /* dropping '\n' */
+                  i++;
+                  missing_chars--;
+                  newline_found = false;
+              }
+
+          } else {
+              current_chars_per_line = missing_chars;
+
+              for (uint32_t offset = i; offset < i + missing_chars; ++offset) {
+                  if (text->text[offset] == '\n') {
+                      printf("found newline, curr is now %d, i: %d, off: %d\n", offset - i, i, offset);
+                      current_chars_per_line = offset - i;
+                      newline_found = true;
+                  }
+              }
+
+              strncpy(line, &(text->text[i]), current_chars_per_line);
+              switch (text->align) {
+                  case TXT_ALIGN_LEFT:
+                      posx = x1 + TXT_MARGIN;
+                      break;
+                  case TXT_ALIGN_CENTER:
+                      posx=(x2-x1-current_chars_per_line*char_width)/2;
+                      break;
+                  case TXT_ALIGN_RIGHT:
+                      posx=(x2-x1-current_chars_per_line*char_width) - TXT_MARGIN;
+                      break;
+                  default:
+                      posx=(x2-x1-current_chars_per_line*char_width)/2;
+                      break;
+              }
+              tft_set_cursor_pos(x1+posx,posy+y1);
+              tft_puts((char*)line);
+              missing_chars -= current_chars_per_line;
+              i += current_chars_per_line;
+
+              if (text->text[i] == '\n') {
+                  printf("dropping newline\n");
+                  /* dropping '\n' */
+                  i++;
+                  missing_chars--;
+                  newline_found = false;
+              }
+
+          }
+          posy += font_height/2;
+      } while (missing_chars > 0);
+}
 
 /*
  * Draw a tile
  */
 static void gui_draw_tile(int x1, int x2, int y1, int y2,
-        const char *text,
+        tile_text_t *     text,
         tile_colormap_t  bg,
         tile_colormap_t  fg,
         const uint8_t *icon,
         const uint32_t icon_size)
 {
-    const int char_width = font_width/128;
-    int posx;
     uint8_t iconvfill = 0;
+    int posy;
   // create the box color
   tft_fill_rectangle(x1,x2,y1,y2,0,0,0);
   tft_fill_rectangle(x1+2,x2-2,y1+2,y2-2,bg.r,bg.g,bg.b);
@@ -355,56 +493,14 @@ static void gui_draw_tile(int x1, int x2, int y1, int y2,
   }
   // add the box title
   //
-  if (text) {
-      tft_setfg(fg.r,fg.g,fg.b);
-      tft_setbg(bg.r,bg.g,bg.b);
-      uint8_t chars_per_line;
-      uint8_t numlines;
-      int posy;
-      // 1) calculate the number of char per line in the case
-      chars_per_line=((x2 - 5 - x1 + 5)/char_width);
-      // 2) calculate the number of lines
-      numlines=(strlen(text)/chars_per_line) + 1;
-      // 3) calculate the position of the first line depending on
-      // the number of lines
-      //  ... the middle line...
+  if (text->text) {
       if (!icon) {
           posy=(y2-y1-font_height/2)/2;
       } else {
           posy=(((y2 - y1)-45)/2 + iconvfill);
       }
-      for (uint8_t i = 1; i < numlines; ++i) {
-          // go up of 1 line
-          posy -= font_height/2;
-      }
-      uint8_t missing_chars = strlen(text);
-      uint8_t i = 0;
-      char line[chars_per_line + 1];
-      memset(line, 0x0, chars_per_line + 1);
-      do {
-          if (missing_chars > chars_per_line) {
-              memcpy(line, &(text[i]), chars_per_line);
-              posx=(x2-x1-chars_per_line*char_width)/2;
-              tft_set_cursor_pos(x1+posx,posy+y1);
-              tft_puts((char*)line);
-              // print only a part of the string
-              missing_chars -= chars_per_line;
-              i += chars_per_line;
-          } else {
-              posx=(x2-x1-strlen(&(text[i]))*char_width)/2;
-              tft_set_cursor_pos(x1+posx,posy+y1);
-              tft_puts((char*)&(text[i]));
-              missing_chars = 0;
-          }
-          posy += font_height/2;
-      } while (missing_chars > 0);
-#if 0
-      posx=(x2-x1-strlen(text)*char_width)/2;
-      tft_set_cursor_pos(x1+posx,(y1 + (((y2 - y1)-45)/2 + iconvfill)));
-      tft_setfg(fg.r,fg.g,fg.b);
-      tft_setbg(bg.r,bg.g,bg.b);
-      tft_puts((char*)text);
-#endif
+
+      gui_draw_text(text, &bg, &fg, x1, x2, y1, posy);
   }
 }
 
@@ -419,7 +515,7 @@ static void draw_gui(void)
         tile_t * tile = &tile_list[i];
         if (tile->menu == current_menu) {
             gui_draw_tile(tile->x_start, tile->x_end, tile->y_start, tile->y_end,
-                          tile->text, tile->colormap[0], tile->colormap[1], tile->icon.data, tile->icon.size);
+                          &(tile->text), tile->colormap[0], tile->colormap[1], tile->icon.data, tile->icon.size);
         }
     }
 }
