@@ -18,6 +18,8 @@
 
 #define TXT_MARGIN 5
 
+#define GUI_DEBUG 0
+
 /* tft specific */
 extern const int font_width;
 extern const int font_height;
@@ -119,7 +121,9 @@ static void gui_execute_tile(tile_t* tile)
  */
 static tile_desc_t gui_handle_tile(menu_desc_t menu, int x, int y)
 {
+#if GUI_DEBUG
     printf("handling tiles...\n");
+#endif
     for (uint8_t i = 1; i < current_tile_id; ++i) {
         if (tile_list[i].menu == menu) {
             if (gui_tile_touched(&tile_list[i], x, y)) {
@@ -386,7 +390,9 @@ static void gui_draw_text(tile_text_t *text,
 
               for (uint32_t offset = i; offset < i + chars_per_line; ++offset) {
                   if (text->text[offset] == '\n') {
+#if GUI_DEBUG
                       printf("found newline, curr is now %d, i: %d, off: %d\n", offset - i, i, offset);
+#endif
                       current_chars_per_line = offset - i;
                       newline_found = true;
                   }
@@ -414,7 +420,9 @@ static void gui_draw_text(tile_text_t *text,
               i += current_chars_per_line;
 
               if (text->text[i] == '\n') {
+#if GUI_DEBUG
                   printf("dropping newline\n");
+#endif
                   /* dropping '\n' */
                   i++;
                   missing_chars--;
@@ -426,7 +434,9 @@ static void gui_draw_text(tile_text_t *text,
 
               for (uint32_t offset = i; offset < i + missing_chars; ++offset) {
                   if (text->text[offset] == '\n') {
+#if GUI_DEBUG
                       printf("found newline, curr is now %d, i: %d, off: %d\n", offset - i, i, offset);
+#endif
                       current_chars_per_line = offset - i;
                       newline_found = true;
                   }
@@ -453,7 +463,9 @@ static void gui_draw_text(tile_text_t *text,
               i += current_chars_per_line;
 
               if (text->text[i] == '\n') {
+#if GUI_DEBUG
                   printf("dropping newline\n");
+#endif
                   /* dropping '\n' */
                   i++;
                   missing_chars--;
@@ -547,7 +559,9 @@ void gui_get_events(void)
     while(1)
     {
         if (gui_refresh_needed) {
+#if GUI_DEBUG
             printf("refresh needed\n");
+#endif
             draw_gui();
         }
         if (!touch_locked) {
@@ -591,7 +605,9 @@ gui_error_t gui_set_menu(menu_desc_t menu)
 {
     if (!gui_menu_exists(menu)) {
 
+#if GUI_DEBUG
         printf("you try to set an unknown menu!\n");
+#endif
         return GUI_ERR_INVAL;
     }
     current_menu = menu;
