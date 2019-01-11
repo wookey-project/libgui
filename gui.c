@@ -26,6 +26,8 @@ extern const int font_blankskip;
 uint16_t screen_width = 0;
 uint16_t screen_height = 0;
 
+bool gui_refresh_needed = false;
+
 static volatile menu_desc_t current_menu = 0;
 static volatile menu_desc_t current_menu_tmp = 0;
 static volatile menu_desc_t default_menu = 0;
@@ -100,9 +102,11 @@ static void gui_execute_tile(tile_t* tile)
     switch (tile->action.type) {
         case TILE_ACTION_MENU:
             current_menu_tmp = tile->action.target.menu;
+            gui_refresh_needed = true;
             break;
         case TILE_ACTION_CB:
             tile->action.target.callback(tile->id);
+            gui_refresh_needed = true;
             break;
         case TILE_ACTION_NONE:
             break;
@@ -473,6 +477,7 @@ static void gui_draw_tile(int x1, int x2, int y1, int y2,
 {
     uint8_t iconvfill = 0;
     int posy;
+    uint32_t iconpos = y1;
   // create the box color
   tft_fill_rectangle(x1,x2,y1,y2,0,0,0);
   tft_fill_rectangle(x1+2,x2-2,y1+2,y2-2,bg.r,bg.g,bg.b);
@@ -486,10 +491,20 @@ static void gui_draw_tile(int x1, int x2, int y1, int y2,
       icon_color[3] = fg.r;
       icon_color[4] = fg.g;
       icon_color[5] = fg.b;
+      if (text->text) {
+          /* when the tile hold both an icon and a text, we center
+           * on both icon and text height (we consider here that the
+           * text is one line sized) */
+          iconpos = y1 + (((y2 - y1)- 45 - font_height/2)/2);
+      } else {
+          /* without text, the icon is centered on the tile */
+          iconpos = y1 + (((y2 - y1)-45)/2);
+      }
+
       tft_rle_image(x1 + (((x2 - x1)-45)/2),
-              y1 + (((y2 - y1)-45)/2), 45, 45,
+              iconpos, 45, 45,
               (uint8_t*)icon_color, icon, icon_size);
-      iconvfill = 48;
+      iconvfill = 45 + 10;
   }
   // add the box title
   //
@@ -497,7 +512,7 @@ static void gui_draw_tile(int x1, int x2, int y1, int y2,
       if (!icon) {
           posy=(y2-y1-font_height/2)/2;
       } else {
-          posy=(((y2 - y1)-45)/2 + iconvfill);
+          posy=(iconpos + iconvfill - y1);
       }
 
       gui_draw_text(text, &bg, &fg, x1, x2, y1, posy);
@@ -518,6 +533,7 @@ static void draw_gui(void)
                           &(tile->text), tile->colormap[0], tile->colormap[1], tile->icon.data, tile->icon.size);
         }
     }
+    gui_refresh_needed = false;
 }
 
 /*
@@ -525,9 +541,15 @@ static void draw_gui(void)
  */
 void gui_get_events(void)
 {
+    /* initial GUI printing */
+    draw_gui();
+
     while(1)
     {
-        draw_gui();
+        if (gui_refresh_needed) {
+            printf("refresh needed\n");
+            draw_gui();
+        }
         if (!touch_locked) {
           touch_read_X_DFR();/* Ensures that PenIRQ is enabled */
         }
@@ -541,7 +563,9 @@ void gui_get_events(void)
         while (!(touch_refresh_pos(),touch_is_touched())) {
             /* handling external events (IPC...) */
             if (external_events_cb) {
-                external_events_cb();
+                /* external events may impact the graphical state, which means that
+                 * the GUI has to be refreshed */
+                external_events_cb(&gui_refresh_needed);
             }
             if (!touch_locked) {
                 touch_enable_exti();

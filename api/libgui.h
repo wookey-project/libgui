@@ -70,7 +70,7 @@ typedef struct {
     tile_text_align_t align;
 } tile_text_t;
 
-typedef void (*cb_external_events)(void);
+typedef void (*cb_external_events)(bool *refresh_gui_after);
 
 void gui_init(uint16_t width, uint16_t height, cb_external_events external_events_cb);
 
