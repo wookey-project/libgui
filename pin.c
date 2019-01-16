@@ -11,7 +11,7 @@
 #define WHITE 255,255,255
 #define BLACK 0,0,0
 #define WOOKEY_BLUE 29,201,255
-#define WOOKEY_RED 226,39,92 
+#define WOOKEY_RED 226,39,92
 #define WOOKEY_GREEN 9,250,57
 #define WOOKEY_ORANGE 255,213,19
 #define GRAY 226,226,226
@@ -85,7 +85,7 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
 	tft_fill_rectangle(x1+hspace+hsize+2,x1+hsize+hspace+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
 		WOOKEY_BLUE);
-	
+
 	tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
@@ -111,10 +111,10 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
 	tft_set_cursor_pos(x1+hspace*j+hsize*j+hsize/2-strlen(keys[k])*char_width/2,
 		y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
     	//tft_puts(keys[k++]);
-    	tft_putc(TXT_KEY_BASE + (offset * 10) + k++);	
+    	tft_putc(TXT_KEY_BASE + (offset * 10) + k++);
     }
   }
-#if 1 
+#if 1
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_RED);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
@@ -125,13 +125,13 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
   tft_setbg(WOOKEY_BLUE);
   tft_set_cursor_pos(x1+hspace+hsize+hsize/2-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
-  tft_putc(TXT_KEY_BASE + (offset * 10) + k++);	
-  //tft_puts(keys[k++]);	
+  tft_putc(TXT_KEY_BASE + (offset * 10) + k++);
+  //tft_puts(keys[k++]);
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_GREEN);
   tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
-  tft_puts(">>");	
+  tft_puts(">>");
   i=4;
 #endif
   // pin bar
@@ -152,7 +152,7 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
   tft_setbg(25,25,255);
   tft_set_cursor_pos(x2-hspace-58+29-char_width-char_width/2,
           y1+28-font_height/4+font_blankskip/4);
-  tft_puts("Ok");	
+  tft_puts("Ok");
 }
 
 
@@ -189,7 +189,7 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 	tft_fill_rectangle(x1+hspace+hsize+2,x1+hsize+hspace+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
 		WOOKEY_BLUE);
-	
+
 	tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
@@ -214,10 +214,10 @@ static void draw_pin(int x1,int x2, int y1, int y2)
     {
 	tft_set_cursor_pos(x1+hspace*j+hsize*j+hsize/2-strlen(keys[k])*char_width/2,
 		y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
-    	tft_puts(keys[k++]);	
+    	tft_puts(keys[k++]);
     }
   }
-#if 1 
+#if 1
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_RED);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
@@ -228,12 +228,12 @@ static void draw_pin(int x1,int x2, int y1, int y2)
   tft_setbg(WOOKEY_BLUE);
   tft_set_cursor_pos(x1+hspace+hsize+hsize/2-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
-  tft_puts(keys[k++]);	
+  tft_puts(keys[k++]);
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_GREEN);
   tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
-  tft_puts("Ok");	
+  tft_puts("Ok");
   i=4;
 #endif
 #if 0
@@ -256,13 +256,14 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 }
 
 
-static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c, 
+static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
 			uint8_t r, uint8_t g, uint8_t b);
 
 uint8_t pin_request_string_validation(const char *msg,
                                       const char *string,
                                       uint8_t string_len __attribute__((unused)) /* TODO: future use */)
 {
+  const int hspace=5, vspace=10, char_width=font_width/128;
   tft_setfg(200,200,200);
   tft_setbg(5,0,5);
   tft_set_cursor_pos(0,29);
@@ -275,13 +276,39 @@ uint8_t pin_request_string_validation(const char *msg,
   tft_set_cursor_pos(0,29);
   tft_puts((char*)msg);
 
-  pin_draw_case(10, 230, 70, 230, string, 245, 245, 245);
+  int x1 = 0;
+  int x2 = 240;
+  int y1 = 60;
+  int y2 = 320;
+  int hsize = (x2-x1-3*hspace)/3;
+  int vsize = (y2-y1-4*vspace)/5;
 
-  tft_fill_rectangle(8, 82, 248, 302, 240,240,240);
-  pin_draw_case(10, 80, 250, 300, "OK", WOOKEY_GREEN);
+  pin_draw_case(5, 235, 60, 270, string, 245, 245, 245);
 
-  tft_fill_rectangle(158, 232, 248, 302, 240,240,240);
-  pin_draw_case(160, 230, 250, 300, "KO", WOOKEY_RED);
+  tft_fill_rectangle(x1,x1+hsize, y1+4*vspace+4*vsize, y1+4*vspace+4*vsize+vsize,
+          WHITE);
+  tft_fill_rectangle(x1+2,x1+hsize-2,
+          y1+4*vspace+4*vsize+2, y1+4*vspace+4*vsize+vsize-2,
+          WOOKEY_RED);
+
+  tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
+          y1+4*vspace+4*vsize, y1+4*vspace+4*vsize+vsize,
+          WHITE);
+  tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
+          y1+4*vspace+4*vsize+2, y1+4*vspace+4*vsize+vsize-2,
+          WOOKEY_GREEN);
+
+  tft_setfg(0,0,0);
+  tft_setbg(WOOKEY_RED);
+  tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
+          y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
+  tft_puts("Ko");
+
+  tft_setfg(0,0,0);
+  tft_setbg(WOOKEY_GREEN);
+  tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
+      y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
+  tft_puts("Ok");
 
   while (1) {
     touch_read_X_DFR();//Ensures that PenIRQ is enabled
@@ -305,15 +332,14 @@ uint8_t pin_request_string_validation(const char *msg,
       posy=touch_getx();
       posx=touch_gety();
 
-      if (posx > 10 && posx < 80 && posy > 250 && posy < 300) {
+      if(posy>=(y1+4*vspace+4*vsize) && posy<=(y1+4*vspace+5*vsize)) {
+          if(posx>=x1 && posx<=(x1+hsize)) {
+              return 1;
+          }
+          if(posx>=(x1+2*hspace+2*hsize) && posx<=(x1+2*hspace+3*hsize)) {
+              return 0;
+          }
 
-          /* OK pushed */
-          return 0;
-      }
-
-      if (posx > 160 && posx < 230 && posy > 250 && posy < 300) {
-          /* Invalid pushed */
-          return 1;
       }
     }
   }
@@ -321,7 +347,7 @@ uint8_t pin_request_string_validation(const char *msg,
 }
 
 
-static void pin_redraw_text_footer(const char nb_given, const char *str, t_draw_mode mode, 
+static void pin_redraw_text_footer(const char nb_given, const char *str, t_draw_mode mode,
 			int x1, int x2, int y1, int y2)
 {
   int posx,posy,i;
@@ -357,7 +383,7 @@ static void pin_redraw_text_footer(const char nb_given, const char *str, t_draw_
   }
 }
 
-static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c, 
+static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
 			uint8_t r, uint8_t g, uint8_t b)
 {
   const int char_width=font_width/128;
@@ -365,8 +391,9 @@ static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
   tft_setbg(r,g,b);
   uint8_t chars_per_line;
   uint8_t numlines;
-  //tft_setfg(0,0,0);
-  tft_fill_rectangle(x1,x2,y1,y2,r,g,b);
+  tft_setfg(255-r,255-g,255-b);
+  tft_fill_rectangle(x1,x2,y1,y2,200,200,200);
+  tft_fill_rectangle(x1+1,x2-1,y1+1,y2-1,r,g,b);
   // 1) calculate the number of char per line in the case
   chars_per_line=((x2 - 5 - x1 + 5)/char_width);
   // 2) calculate the number of lines
@@ -495,7 +522,7 @@ void pin_request_string(const char *title,
       //Recolor the lastcase rectangle if it needs to
       mycase=3*(coly-1)+colx;
 
-      key[0] = TXT_KEY_BASE + (offset * 10) + (lasty - 1) * 3 + lastx;	
+      key[0] = TXT_KEY_BASE + (offset * 10) + (lasty - 1) * 3 + lastx;
       if(lastcase>=0 && mycase!=lastcase)
       {
         if ((lasty==4) && (lastx==0))
@@ -504,7 +531,7 @@ void pin_request_string(const char *title,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
               y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_ORANGE);
-        } 
+        }
         else if ((lasty==4) && (lastx==2))
         {
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
@@ -526,7 +553,7 @@ void pin_request_string(const char *title,
       }
       //Is touch currently out of range
       if( colx==-1 || coly==-1)
-      {	
+      {
         lastcase=-1;
         continue;
       }
@@ -563,7 +590,7 @@ void pin_request_string(const char *title,
         } else {
           offset--;
         }
-	 //tft_setbg(WOOKEY_RED);  
+	 //tft_setbg(WOOKEY_RED);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
@@ -578,12 +605,12 @@ void pin_request_string(const char *title,
         } else {
             offset++;
         }
-        //tft_setbg(WOOKEY_GREEN);  
+        //tft_setbg(WOOKEY_GREEN);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
                 y1+lasty*vspace+lasty*vsize+vsize-2, ">>",WOOKEY_ORANGE);
-        //Last touch was Ok 
+        //Last touch was Ok
 #if PIN_DEBUG
         printf("nb_given %d nb_pin %d\n",nb_given,maxlen);
 #endif
@@ -595,7 +622,7 @@ void pin_request_string(const char *title,
     }
     //Redraw text footer
     pin_redraw_text_footer(nb_given, string, DRAW_MODE_PETPIN, x1+2, x2-hspace-62,
-	    y1+2, y1+vsize-2);  
+	    y1+2, y1+vsize-2);
   }
 }
 
@@ -689,7 +716,7 @@ uint8_t pin_request_digits(const char *title,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
               y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_RED);
-        } 
+        }
         else if ((lasty==4) && (lastx==2))
         {
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
@@ -707,7 +734,7 @@ uint8_t pin_request_digits(const char *title,
       }
       //Is touch currently out of range
       if( colx==-1 || coly==-1)
-      {	
+      {
         lastcase=-1;
         continue;
       }
@@ -725,7 +752,7 @@ uint8_t pin_request_digits(const char *title,
     }
     //Validation at th last position
     //Were we out of the scope ? Then do nothing
-    if(lastcase<0) 
+    if(lastcase<0)
       continue;
     //Otherwise redraw last case as normal
     pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
@@ -738,7 +765,7 @@ uint8_t pin_request_digits(const char *title,
 #endif
     if ((lasty==4) && (lastx==0))
     {
-	 //tft_setbg(WOOKEY_RED);  
+	 //tft_setbg(WOOKEY_RED);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
@@ -755,17 +782,17 @@ uint8_t pin_request_digits(const char *title,
     }
     else if ((lasty==4) && (lastx==2))
     {
-        //tft_setbg(WOOKEY_GREEN);  
+        //tft_setbg(WOOKEY_GREEN);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
                 y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_GREEN);
-        //Last touch was Ok 
+        //Last touch was Ok
 #if PIN_DEBUG
         printf("nb_given %d nb_pin %d\n",nb_given,max_pin_len);
 #endif
         //if(nb_given == nb_pin), always return when ok is pushed
-            return nb_given;	
+            return nb_given;
     }
     else
     {
@@ -774,6 +801,6 @@ uint8_t pin_request_digits(const char *title,
     }
     //Redraw text footer
     pin_redraw_text_footer(nb_given, 0, DRAW_MODE_PIN, x1+2, x2-hspace-2,
-	    y1+2, y1+vsize-2);  
+	    y1+2, y1+vsize-2);
   }
 }
