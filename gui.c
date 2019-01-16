@@ -127,7 +127,9 @@ static tile_desc_t gui_handle_tile(menu_desc_t menu, int x, int y)
     for (uint8_t i = 1; i < current_tile_id; ++i) {
         if (tile_list[i].menu == menu) {
             if (gui_tile_touched(&tile_list[i], x, y)) {
+#if GUI_DEBUG
                 printf("found tile %d\n", i);
+#endif
                 gui_execute_tile(&tile_list[i]);
                 return tile_list[i].id;
             }
