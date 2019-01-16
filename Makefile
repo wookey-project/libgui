@@ -12,6 +12,7 @@ VERSION = 1
 # use an app-specific build dir
 APP_BUILD_DIR = $(BUILD_DIR)/libs/$(LIB_NAME)
 
+CFLAGS += $(LIBS_CFLAGS)
 CFLAGS += -ffreestanding
 CFLAGS += $(DRIVERS_CFLAGS)
 CFLAGS += -I$(PROJ_FILES)/include/generated -I$(PROJ_FILES) -I$(PROJ_FILES)/libs/std -I$(PROJ_FILES)/kernel/shared -I.
@@ -25,8 +26,6 @@ CFLAGS += -I$(PROJ_FILES)/include/generated -I$(PROJ_FILES) -I$(PROJ_FILES)/libs
 # tft_setfg()
 # tft_puts()
 # tft_putc()
-CFLAGS += -I$(PROJ_FILES)/drivers/boards/$(BOARD)/ad7843/api
-CFLAGS += -I$(PROJ_FILES)/drivers/boards/$(BOARD)/ili9341/api
 CFLAGS += -MMD -MP
 
 LDFLAGS += -fno-builtin -nostdlib -nostartfiles
