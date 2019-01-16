@@ -150,6 +150,18 @@ static bool gui_menu_exists(menu_desc_t menu)
 }
 
 /*
+ * is the given menu descriptor exists ?
+ */
+static bool gui_tile_exists(tile_desc_t tile)
+{
+    if (tile > 0 && tile < current_tile_id) {
+        return true;
+    }
+    return false;
+}
+
+
+/*
  * Declare the default (bootup) menu
  */
 gui_error_t gui_declare_default_menu(menu_desc_t menu)
@@ -423,7 +435,7 @@ static void gui_draw_text(tile_text_t *text,
 
               if (text->text[i] == '\n') {
 #if GUI_DEBUG
-                  printf("dropping newline\n");
+                  printf("dropping newline char\n");
 #endif
                   /* dropping '\n' */
                   i++;
@@ -634,4 +646,18 @@ void gui_lock_touch(void)
 void gui_unlock_touch(void)
 {
     touch_locked = false;
+}
+
+
+gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile)
+{
+    if (!txt) {
+        return GUI_ERR_INVAL;
+    }
+    if (!gui_tile_exists(tile)) {
+        return GUI_ERR_INVAL;
+    }
+    tile_list[tile].text.text = txt->text;
+    tile_list[tile].text.align = txt->align;
+    return GUI_ERR_NONE;
 }
