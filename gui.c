@@ -353,6 +353,14 @@ static void gui_draw_background(void)
     tft_fill_rectangle(0,screen_width,0,screen_height,0,0,0);
 }
 
+static bool gui_char_is_printable(char c)
+{
+    if (c >= 33 && c <= 126) {
+        return true;
+    }
+    return false;
+}
+
 
 /*
  * \brief Draw the given text
@@ -433,7 +441,7 @@ static void gui_draw_text(tile_text_t *text,
               missing_chars -= current_chars_per_line;
               i += current_chars_per_line;
 
-              if (text->text[i] == '\n') {
+              while (missing_chars && !gui_char_is_printable(text->text[i])) {
 #if GUI_DEBUG
                   printf("dropping newline char\n");
 #endif
