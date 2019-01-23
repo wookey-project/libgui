@@ -577,6 +577,7 @@ void gui_force_refresh(void)
 }
 
 
+static uint64_t graphic_idle_start = 0;
 
 /*
  * Gui events loop
@@ -585,6 +586,8 @@ void gui_get_events(void)
 {
     /* initial GUI printing */
     draw_gui();
+
+    sys_get_systick(&graphic_idle_start, PREC_MILLI);
 
     while(1)
     {
@@ -614,7 +617,8 @@ void gui_get_events(void)
             if (!touch_locked) {
                 touch_enable_exti();
             }
-            sys_yield();
+            /* sleeping while no event arrise, up to 1 second */
+            sys_sleep(1000, SLEEP_MODE_INTERRUPTIBLE);
         }
         //Follow the motion on the screen
         while (touch_refresh_pos(),touch_is_touched())
@@ -626,9 +630,18 @@ void gui_get_events(void)
 
             gui_handle_tile(current_menu, posx, posy);
         }
+
+        sys_get_systick(&graphic_idle_start, PREC_MILLI);
         current_menu = current_menu_tmp;
     }
     return;
+}
+
+uint64_t    gui_get_idle_time(void)
+{
+    uint64_t cur;
+    sys_get_systick(&cur, PREC_MILLI);
+    return ((cur - graphic_idle_start) / 1000);
 }
 
 gui_error_t gui_set_menu(menu_desc_t menu)
@@ -668,4 +681,10 @@ gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile)
     tile_list[tile].text.text = txt->text;
     tile_list[tile].text.align = txt->align;
     return GUI_ERR_NONE;
+}
+
+
+menu_desc_t gui_get_current_menu(void)
+{
+    return current_menu;
 }

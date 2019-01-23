@@ -102,4 +102,8 @@ void gui_lock_touch(void);
 
 void gui_unlock_touch(void);
 
+menu_desc_t gui_get_current_menu(void);
+
+uint64_t    gui_get_idle_time(void);
+
 #endif/*!MENU2_H_*/
