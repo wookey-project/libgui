@@ -672,16 +672,35 @@ void gui_unlock_touch(void)
 
 gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile)
 {
-    if (!txt) {
-        return GUI_ERR_INVAL;
-    }
     if (!gui_tile_exists(tile)) {
         return GUI_ERR_INVAL;
     }
-    tile_list[tile].text.text = txt->text;
-    tile_list[tile].text.align = txt->align;
+    if (!txt) {
+        /* unset text */
+        tile_list[tile].text.text = 0;
+    } else {
+        tile_list[tile].text.text = txt->text;
+        tile_list[tile].text.align = txt->align;
+    }
     return GUI_ERR_NONE;
 }
+
+gui_error_t gui_set_tile_icon(tile_icon_t * icon, tile_desc_t tile)
+{
+    if (!gui_tile_exists(tile)) {
+        return GUI_ERR_INVAL;
+    }
+    if (!icon) {
+        /* unset text */
+        tile_list[tile].icon.size = 0;
+        tile_list[tile].icon.data = 0;
+    } else {
+        tile_list[tile].icon.size = icon->size;
+        tile_list[tile].icon.data = icon->data;
+    }
+    return GUI_ERR_NONE;
+}
+
 
 
 menu_desc_t gui_get_current_menu(void)

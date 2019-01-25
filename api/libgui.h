@@ -82,6 +82,8 @@ gui_error_t gui_set_menu(menu_desc_t menu);
 
 gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile);
 
+gui_error_t gui_set_tile_icon(tile_icon_t * icon, tile_desc_t tile);
+
 gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_colormap_t   *colormap,
                               tile_width_t       width,
