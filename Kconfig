@@ -5,9 +5,6 @@ config USR_LIB_GUI
   Support for graphic user interface API for embedded system.
   Still oriented for the Wookey use case but targets a more
   generic usage.
-config USR_LIB_GUI_CFLAGS
-  string
-  default " -I../../libs/gui/api " if USR_LIB_GUI
 
 if USR_LIB_GUI
 
