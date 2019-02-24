@@ -38,14 +38,6 @@ cb_external_events external_events_cb = 0;
 
 static bool touch_locked = false;
 
-void gui_init(uint16_t width, uint16_t height, cb_external_events ext_events_cb)
-{
-    screen_width = width;
-    screen_height = height;
-    external_events_cb = ext_events_cb;
-
-}
-
 /* menu and tile descriptors start at 1. 0 permit to detect empty fields */
 menu_desc_t current_menu_id = 1;
 tile_desc_t current_tile_id = 1;
@@ -78,9 +70,17 @@ typedef struct {
 } menu_spec_t;
 
 /* list of menus */
-static menu_spec_t      menu_list[MAX_MENUS] = { 0 };
+static menu_spec_t      menu_list[MAX_MENUS] = { { .title = { 0 }, .lastx = 0, .lasty = 0} };
 /* list of tiles */
-static tile_t tile_list[MAX_TILES] = { 0 };
+static tile_t tile_list[MAX_TILES];
+
+void gui_init(uint16_t width, uint16_t height, cb_external_events ext_events_cb)
+{
+    screen_width = width;
+    screen_height = height;
+    external_events_cb = ext_events_cb;
+    memset(&tile_list, 0, MAX_TILES * sizeof(tile_t));
+}
 
 /*
  * is the tile touched ?
