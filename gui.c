@@ -112,6 +112,8 @@ static void gui_execute_tile(tile_t* tile)
             break;
         case TILE_ACTION_NONE:
             break;
+        default:
+            break;
     }
 }
 
@@ -213,7 +215,11 @@ static uint16_t gui_get_tile_width(tile_t *tile)
             return screen_width / 2;
         case TILE_WIDTH_FULL:
             return screen_width;
+        default:
+            break;
     }
+    /* no default, as the line bellow is
+     * used as default switch() value */
     return 0;
 }
 
@@ -231,7 +237,11 @@ static uint16_t gui_get_tile_height(tile_t *tile)
             return TILE_HEIGHT * 2;
         case TILE_HEIGHT_TRIPLE:
             return TILE_HEIGHT * 3;
+        default:
+            break;
     }
+    /* no default, as the line bellow is
+     * used as default switch() value */
     return 0;
 }
 
@@ -326,6 +336,8 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
         case TILE_HEIGHT_TRIPLE:
             tile->y_end   = menu_list[tile->menu].lasty + 3*TILE_HEIGHT;
             break;
+        default:
+            goto err_inval;
     }
 
     /* increment menu posx posxy for next tile */
