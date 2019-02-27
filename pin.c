@@ -176,7 +176,6 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 		WOOKEY_BLUE);
     }
   }
-#if 1
 	tft_fill_rectangle(x1,x1+hsize, y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+2,x1+hsize-2,
@@ -196,10 +195,6 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 	tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
 		WOOKEY_GREEN);
-//	tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
-//		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-//		WOOKEY_GREEN);
-#endif
   //Draw strings
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_BLUE);
@@ -217,7 +212,6 @@ static void draw_pin(int x1,int x2, int y1, int y2)
     	tft_puts(keys[k++]);
     }
   }
-#if 1
   tft_setfg(0,0,0);
   tft_setbg(WOOKEY_RED);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
@@ -235,16 +229,6 @@ static void draw_pin(int x1,int x2, int y1, int y2)
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ok");
   i=4;
-#endif
-#if 0
-  //Draw last line
-  tft_fill_rectangle(x1,x2-hspace,
-                y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
-                WHITE);
-  tft_fill_rectangle(x1+2,x2-hspace-2,
-                y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-                0,0,0);
-#else
   tft_fill_rectangle(x1,x2-hspace,
                 y1, y1+vsize,
                 WHITE);
@@ -252,7 +236,6 @@ static void draw_pin(int x1,int x2, int y1, int y2)
                 y1+2, y1+vsize-2,
                 226,226,226);
 
-#endif
 }
 
 
@@ -283,6 +266,7 @@ uint8_t pin_request_string_validation(const char *msg,
   int hsize = (x2-x1-3*hspace)/3;
   int vsize = (y2-y1-4*vspace)/5;
 
+  tft_setfg(0,0,0);
   pin_draw_case(5, 235, 60, 270, string, 245, 245, 245);
 
   tft_fill_rectangle(x1,x1+hsize, y1+4*vspace+4*vsize, y1+4*vspace+4*vsize+vsize,
@@ -391,7 +375,7 @@ static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
   tft_setbg(r,g,b);
   uint8_t chars_per_line;
   uint8_t numlines;
-  tft_setfg(255-r,255-g,255-b);
+//  tft_setfg(255-r,255-g,255-b);
   tft_fill_rectangle(x1,x2,y1,y2,200,200,200);
   tft_fill_rectangle(x1+1,x2-1,y1+1,y2-1,r,g,b);
   // 1) calculate the number of char per line in the case
@@ -432,10 +416,12 @@ static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
 
 static void pin_normal_case(int x1,int x2, int y1, int y2, char *c)
 {
+    tft_setfg(0,0,0);
    pin_draw_case(x1,x2,y1,y2,c,WOOKEY_BLUE);
 }
 static void pin_highlight_case(int x1,int x2, int y1, int y2, char *c)
 {
+    tft_setfg(0,0,0);
    pin_draw_case(x1,x2,y1,y2,c,HIGHLIGHT_COLOR);
 }
 
@@ -527,13 +513,15 @@ void pin_request_string(const char *title,
       {
         if ((lasty==4) && (lastx==0))
         {
-          pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+            tft_setfg(0,0,0);
+            pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
               y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_ORANGE);
         }
         else if ((lasty==4) && (lastx==1))
         {
+            tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -541,6 +529,7 @@ void pin_request_string(const char *title,
         }
         else if ((lasty==4) && (lastx==2))
         {
+            tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -548,6 +537,7 @@ void pin_request_string(const char *title,
         }
         else
         {
+            tft_setfg(0,0,0);
           pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -597,7 +587,8 @@ void pin_request_string(const char *title,
         } else {
           offset--;
         }
-	 //tft_setbg(WOOKEY_RED);
+        //tft_setbg(WOOKEY_RED);
+        tft_setfg(0,0,0);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
@@ -613,6 +604,7 @@ void pin_request_string(const char *title,
             offset++;
         }
         //tft_setbg(WOOKEY_GREEN);
+        tft_setfg(0,0,0);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
@@ -624,6 +616,7 @@ void pin_request_string(const char *title,
       draw_txt_pad(x1,x2,y1,y2, offset);
     } else if ((lasty==4) && (lastx==1)) {
         /* correction */
+        tft_setfg(0,0,0);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
@@ -734,6 +727,7 @@ uint8_t pin_request_digits(const char *title,
       {
         if ((lasty==4) && (lastx==0))
         {
+            tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -741,6 +735,7 @@ uint8_t pin_request_digits(const char *title,
         }
         else if ((lasty==4) && (lastx==2))
         {
+            tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -748,6 +743,7 @@ uint8_t pin_request_digits(const char *title,
         }
         else
         {
+            tft_setfg(0,0,0);
           pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -777,6 +773,7 @@ uint8_t pin_request_digits(const char *title,
     if(lastcase<0)
       continue;
     //Otherwise redraw last case as normal
+    tft_setfg(0,0,0);
     pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
@@ -787,7 +784,8 @@ uint8_t pin_request_digits(const char *title,
 #endif
     if ((lasty==4) && (lastx==0))
     {
-	 //tft_setbg(WOOKEY_RED);
+        //tft_setbg(WOOKEY_RED);
+        tft_setfg(0,0,0);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
@@ -805,6 +803,7 @@ uint8_t pin_request_digits(const char *title,
     else if ((lasty==4) && (lastx==2))
     {
         //tft_setbg(WOOKEY_GREEN);
+        tft_setfg(0,0,0);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
