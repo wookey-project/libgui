@@ -1,13 +1,13 @@
 #include "autoconf.h"
 #include "api/string.h"
-#include "api/print.h"
+#include "api/stdio.h"
+#include "api/nostd.h"
 #include "api/types.h"
 #include "api/syscall.h"
 /* touchscreen and tft driver API */
 #include "libtft.h"
 #include "libtouch.h"
 /* local utilities (tft, pin) */
-#include "rtc.h"
 #include "api/gui_pin.h"
 #include "api/libgui.h"
 
