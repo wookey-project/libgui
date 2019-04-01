@@ -13,8 +13,8 @@
 
 /* tile height is defined as 100 pixels */
 #define TILE_HEIGHT 90
-#define MAX_MENUS  10
-#define MAX_TILES  32
+#define MAX_MENUS  CONFIG_USR_LIB_GUI_MAX_MENU_NUMBER
+#define MAX_TILES  CONFIG_USR_LIB_GUI_MAX_TILE_NUMBER
 
 #define TXT_MARGIN 5
 

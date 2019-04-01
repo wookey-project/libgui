@@ -25,6 +25,19 @@ choice USR_LIB_GUI_MODE
       Usefull for smaller systems or apps.
 endchoice
 
+config USR_LIB_GUI_MAX_MENU_NUMBER
+   int "Max number of declarable menus"
+   default 10
+   ---help---
+      Maximum number of menus that can be declared
+
+config USR_LIB_GUI_MAX_TILE_NUMBER
+   int "Max number of declarable tiles"
+   default 32
+   ---help---
+      Maximum number of tiles that can be declared
+
+
 endmenu
 
 endif

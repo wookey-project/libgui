@@ -1,5 +1,5 @@
-#ifndef MENU2_H_
-#define MENU2_H_
+#ifndef LIBGUI_H_
+#define LIBGUI_H_
 
 /* up to 255 menus */
 typedef uint8_t menu_desc_t;
@@ -78,12 +78,6 @@ gui_error_t gui_declare_menu(const char *name, menu_desc_t *menu_desc);
 
 gui_error_t gui_declare_default_menu(menu_desc_t menu);
 
-gui_error_t gui_set_menu(menu_desc_t menu);
-
-gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile);
-
-gui_error_t gui_set_tile_icon(tile_icon_t * icon, tile_desc_t tile);
-
 gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_colormap_t   *colormap,
                               tile_width_t       width,
@@ -92,6 +86,12 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
                               tile_text_t       *text,
                               tile_icon_t       *icon,
                               tile_desc_t       *tile_desc);
+
+gui_error_t gui_set_menu(menu_desc_t menu);
+
+gui_error_t gui_set_tile_text(tile_text_t * txt, tile_desc_t tile);
+
+gui_error_t gui_set_tile_icon(tile_icon_t * icon, tile_desc_t tile);
 
 /*
  * synchronous and immediate gui refresh
@@ -108,4 +108,4 @@ menu_desc_t gui_get_current_menu(void);
 
 uint64_t    gui_get_idle_time(void);
 
-#endif/*!MENU2_H_*/
+#endif/*!LIBGUI_H_*/
