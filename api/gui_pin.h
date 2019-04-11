@@ -1,6 +1,26 @@
 #ifndef MYPIN_H
 #define MYPIN_H
 
+typedef struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} rgb_color_t;
+
+/*
+ * Change various colors of the pin pad. If not called, default colors are used.
+ */
+void pin_set_pad_color(const rgb_color_t *pad);
+
+void pin_set_ok_color(const rgb_color_t *ok);
+
+void pin_set_cor_color(const rgb_color_t *cor);
+
+void pin_set_nextprev_color(const rgb_color_t *nextprev);
+
+void pin_set_touched_color(const rgb_color_t *nextprev);
+
+void pin_set_bg_color(const rgb_color_t *bg);
 /*
  * request a text content to the user (blocking call while the user
  * is writing)

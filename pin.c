@@ -19,6 +19,106 @@
 #define GRAY 226,226,226
 
 
+/* black background (default) */
+static rgb_color_t bg_color = {
+    .r = 0,
+    .g = 0,
+    .b = 0
+};
+
+/* ligthblue (default) */
+static rgb_color_t pad_color = {
+    .r = 29,
+    .g = 201,
+    .b = 255
+};
+
+/* green (default) */
+static rgb_color_t ok_color = {
+    .r = 9,
+    .g = 250,
+    .b = 57
+};
+
+/* red (default) */
+static rgb_color_t cor_color = {
+    .r = 226,
+    .g = 39,
+    .b = 92
+};
+
+/* gray (default) */
+static rgb_color_t nextprev_color = {
+    .r = 226,
+    .g = 226,
+    .b = 226
+};
+
+/* orange (default) */
+static rgb_color_t touched_color = {
+    .r = 255,
+    .g = 213,
+    .b = 19
+};
+
+void pin_set_pad_color(const rgb_color_t *pad)
+{
+    if (pad) {
+        pad_color.r = pad->r;
+        pad_color.g = pad->g;
+        pad_color.b = pad->b;
+    }
+}
+
+void pin_set_ok_color(const rgb_color_t *ok)
+{
+    if (ok) {
+        ok_color.r = ok->r;
+        ok_color.g = ok->g;
+        ok_color.b = ok->b;
+    }
+}
+
+void pin_set_cor_color(const rgb_color_t *cor)
+{
+    if (cor) {
+        cor_color.r = cor->r;
+        cor_color.g = cor->g;
+        cor_color.b = cor->b;
+    }
+}
+
+void pin_set_nextprev_color(const rgb_color_t *nextprev)
+{
+    if (nextprev) {
+        nextprev_color.r = nextprev->r;
+        nextprev_color.g = nextprev->g;
+        nextprev_color.b = nextprev->b;
+    }
+}
+
+void pin_set_touched_color(const rgb_color_t *touched)
+{
+    if (touched) {
+        touched_color.r = touched->r;
+        touched_color.g = touched->g;
+        touched_color.b = touched->b;
+    }
+}
+
+void pin_set_bg_color(const rgb_color_t *bg)
+{
+    if (bg) {
+        bg_color.r = bg->r;
+        bg_color.g = bg->g;
+        bg_color.b = bg->b;
+    }
+}
+
+
+
+#define PIN_PAD_DEFAULT_COLOR
+
 extern const int font_width;
 extern const int font_height;
 extern const int font_blankskip;
@@ -71,7 +171,7 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
 		WHITE);
 	tft_fill_rectangle(x1+hspace*j+hsize*j+2,x1+hsize*j+hspace*j+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_BLUE);
+		pad_color.r, pad_color.g, pad_color.b);
     }
   }
 #if 1
@@ -79,28 +179,28 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
 		WHITE);
 	tft_fill_rectangle(x1+2,x1+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_GREEN);
+		ok_color.r, ok_color.g, ok_color.b);
 
 	tft_fill_rectangle(x1+hspace+hsize,x1+hsize+hspace+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+hspace+hsize+2,x1+hsize+hspace+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_ORANGE);
+		touched_color.r, touched_color.g, touched_color.b);
 
 	tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_GREEN);
+		ok_color.r, ok_color.g, ok_color.b);
 //	tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
 //		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-//		WOOKEY_GREEN);
+//		ok_color.r, ok_color.g, ok_color.b);
 #endif
   //Draw strings
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_BLUE);
+  tft_setbg(pad_color.r, pad_color.g, pad_color.b);
   //Bleu 29 201 255
   //Vert valid 9 250 57
   //Rouge correct 226 39 92
@@ -118,19 +218,19 @@ static void draw_txt_pad(int x1,int x2, int y1, int y2, uint8_t offset)
 #if 1
   // previous screen
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_GREEN);
+  tft_setbg(ok_color.r, ok_color.g, ok_color.b);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("<<");
   // Correction
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_ORANGE);
+  tft_setbg(touched_color.r, touched_color.g, touched_color.b);
   tft_set_cursor_pos(x1+hspace+hsize+hsize/2-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Cor");
   // next screen
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_GREEN);
+  tft_setbg(ok_color.r, ok_color.g, ok_color.b);
   tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts(">>");
@@ -175,31 +275,31 @@ static void draw_pin(int x1,int x2, int y1, int y2)
 		WHITE);
 	tft_fill_rectangle(x1+hspace*j+hsize*j+2,x1+hsize*j+hspace*j+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_BLUE);
+		pad_color.r, pad_color.g, pad_color.b);
     }
   }
 	tft_fill_rectangle(x1,x1+hsize, y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+2,x1+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_RED);
+		cor_color.r, cor_color.g, cor_color.b);
 
 	tft_fill_rectangle(x1+hspace+hsize,x1+hsize+hspace+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+hspace+hsize+2,x1+hsize+hspace+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_BLUE);
+		pad_color.r, pad_color.g, pad_color.b);
 
 	tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
 		y1+i*vspace+i*vsize, y1+i*vspace+i*vsize+vsize,
 		WHITE);
 	tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
 		y1+i*vspace+i*vsize+2, y1+i*vspace+i*vsize+vsize-2,
-		WOOKEY_GREEN);
+		ok_color.r, ok_color.g, ok_color.b);
   //Draw strings
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_BLUE);
+  tft_setbg(pad_color.r, pad_color.g, pad_color.b);
   //Bleu 29 201 255
   //Vert valid 9 250 57
   //Rouge correct 226 39 92
@@ -215,18 +315,18 @@ static void draw_pin(int x1,int x2, int y1, int y2)
     }
   }
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_RED);
+  tft_setbg(cor_color.r, cor_color.g, cor_color.b);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Cor");k++;
   //Dernier chiffre
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_BLUE);
+  tft_setbg(pad_color.r, pad_color.g, pad_color.b);
   tft_set_cursor_pos(x1+hspace+hsize+hsize/2-char_width/2,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts(keys[k++]);
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_GREEN);
+  tft_setbg(ok_color.r, ok_color.g, ok_color.b);
   tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
       y1+i*vspace+(i)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ok");
@@ -250,12 +350,12 @@ uint8_t pin_request_string_validation(const char *msg,
 {
   const int hspace=5, vspace=10, char_width=font_width/128;
   tft_setfg(200,200,200);
-  tft_setbg(5,0,5);
+  tft_setbg(bg_color.r, bg_color.g, bg_color.b);
   tft_set_cursor_pos(0,29);
 
-  tft_fill_rectangle(0,240,0,320,0,0,0);
+  tft_fill_rectangle(0,240,0,320,bg_color.r, bg_color.g, bg_color.b);
   tft_setfg(200,200,200);
-  tft_setbg(5,0,5);
+  tft_setbg(bg_color.r, bg_color.g, bg_color.b);
   tft_set_cursor_pos(0,0);
   tft_puts("Please validate");
   tft_set_cursor_pos(0,29);
@@ -275,23 +375,23 @@ uint8_t pin_request_string_validation(const char *msg,
           WHITE);
   tft_fill_rectangle(x1+2,x1+hsize-2,
           y1+4*vspace+4*vsize+2, y1+4*vspace+4*vsize+vsize-2,
-          WOOKEY_RED);
+          cor_color.r, cor_color.g, cor_color.b);
 
   tft_fill_rectangle(x1+hspace*2+hsize*2,x1+hsize*2+hspace*2+hsize,
           y1+4*vspace+4*vsize, y1+4*vspace+4*vsize+vsize,
           WHITE);
   tft_fill_rectangle(x1+hspace*2+hsize*2+2,x1+hsize*2+hspace*2+hsize-2,
           y1+4*vspace+4*vsize+2, y1+4*vspace+4*vsize+vsize-2,
-          WOOKEY_GREEN);
+          ok_color.r, ok_color.g, ok_color.b);
 
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_RED);
+  tft_setbg(cor_color.r, cor_color.g, cor_color.b);
   tft_set_cursor_pos(x1+hsize/2-char_width-char_width/2,
           y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ko");
 
   tft_setfg(0,0,0);
-  tft_setbg(WOOKEY_GREEN);
+  tft_setbg(ok_color.r, ok_color.g, ok_color.b);
   tft_set_cursor_pos(x1+hspace*2+hsize*2+hsize/2-char_width,
       y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ok");
@@ -419,7 +519,7 @@ static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
 static void pin_normal_case(int x1,int x2, int y1, int y2, char *c)
 {
     tft_setfg(0,0,0);
-   pin_draw_case(x1,x2,y1,y2,c,WOOKEY_BLUE);
+   pin_draw_case(x1,x2,y1,y2,c,pad_color.r, pad_color.g, pad_color.b);
 }
 static void pin_highlight_case(int x1,int x2, int y1, int y2, char *c)
 {
@@ -440,12 +540,12 @@ void pin_request_string(const char *title,
   uint8_t offset = 0;
 
   tft_setfg(200,200,200);
-  tft_setbg(5,0,5);
+  tft_setbg(bg_color.r, bg_color.g, bg_color.b);
   tft_set_cursor_pos(0,29);
 
-  tft_fill_rectangle(0,240,0,320,0,0,0);
+  tft_fill_rectangle(0,240,0,320,bg_color.r, bg_color.g, bg_color.b);
   tft_setfg(200,200,200);
-  tft_setbg(5,0,5);
+  tft_setbg(bg_color.r, bg_color.g, bg_color.b);
   tft_set_cursor_pos(0,0);
   tft_puts("  Please enter ");
   tft_set_cursor_pos(0,29);
@@ -519,7 +619,7 @@ void pin_request_string(const char *title,
             pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_ORANGE);
+              y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
         }
         else if ((lasty==4) && (lastx==1))
         {
@@ -527,7 +627,7 @@ void pin_request_string(const char *title,
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_RED);
+              y1+lasty*vspace+lasty*vsize+vsize-2, key,cor_color.r, cor_color.g, cor_color.b);
         }
         else if ((lasty==4) && (lastx==2))
         {
@@ -535,7 +635,7 @@ void pin_request_string(const char *title,
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_ORANGE);
+              y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
         }
         else
         {
@@ -589,12 +689,12 @@ void pin_request_string(const char *title,
         } else {
           offset--;
         }
-        //tft_setbg(WOOKEY_RED);
+        //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
         tft_setfg(0,0,0);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, "<<",WOOKEY_ORANGE);
+	y1+lasty*vspace+lasty*vsize+vsize-2, "<<",touched_color.r, touched_color.g, touched_color.b);
       //Last touch was for correcting
       draw_txt_pad(x1,x2,y1,y2, offset);
     }
@@ -605,12 +705,12 @@ void pin_request_string(const char *title,
         } else {
             offset++;
         }
-        //tft_setbg(WOOKEY_GREEN);
+        //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
         tft_setfg(0,0,0);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, ">>",WOOKEY_ORANGE);
+                y1+lasty*vspace+lasty*vsize+vsize-2, ">>",touched_color.r, touched_color.g, touched_color.b);
         //Last touch was Ok
 #if PIN_DEBUG
         printf("nb_given %d nb_pin %d\n",nb_given,maxlen);
@@ -622,7 +722,7 @@ void pin_request_string(const char *title,
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, key,WOOKEY_ORANGE);
+                y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
         if(nb_given>0)
         {
             string[nb_given]=0;
@@ -666,9 +766,9 @@ uint8_t pin_request_digits(const char *title,
   tft_setbg(5,0,5);
   tft_set_cursor_pos(0,29);
 
-  tft_fill_rectangle(0,240,0,320,0,0,0);
+  tft_fill_rectangle(0,240,0,320,bg_color.r, bg_color.g, bg_color.b);
   tft_setfg(200,200,200);
-  tft_setbg(5,0,5);
+  tft_setbg(bg_color.r, bg_color.g, bg_color.b);
   tft_set_cursor_pos(0,0);
   tft_puts("  Please enter ");
   tft_set_cursor_pos(0,29);
@@ -733,7 +833,7 @@ uint8_t pin_request_digits(const char *title,
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_RED);
+              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
         }
         else if ((lasty==4) && (lastx==2))
         {
@@ -741,7 +841,7 @@ uint8_t pin_request_digits(const char *title,
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_GREEN);
+              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
         }
         else
         {
@@ -786,12 +886,12 @@ uint8_t pin_request_digits(const char *title,
 #endif
     if ((lasty==4) && (lastx==0))
     {
-        //tft_setbg(WOOKEY_RED);
+        //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
         tft_setfg(0,0,0);
 	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
 	x1+lastx*hspace+lastx*hsize+hsize-2,
 	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_RED);
+	y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
       //Last touch was for correcting
       if(nb_given>0)
       {
@@ -804,12 +904,12 @@ uint8_t pin_request_digits(const char *title,
     }
     else if ((lasty==4) && (lastx==2))
     {
-        //tft_setbg(WOOKEY_GREEN);
+        //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
         tft_setfg(0,0,0);
         pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
                 x1+lastx*hspace+lastx*hsize+hsize-2,
                 y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],WOOKEY_GREEN);
+                y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
         //Last touch was Ok
 #if PIN_DEBUG
         printf("nb_given %d nb_pin %d\n",nb_given,max_pin_len);
