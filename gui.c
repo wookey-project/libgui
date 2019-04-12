@@ -608,6 +608,7 @@ void gui_get_events(void)
             printf("refresh needed\n");
 #endif
             draw_gui();
+            gui_refresh_needed = false;
         }
         if (!touch_locked) {
           touch_read_X_DFR();/* Ensures that PenIRQ is enabled */
