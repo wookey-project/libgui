@@ -495,10 +495,16 @@ static void pin_draw_case(int x1,int x2, int y1, int y2, const char *c,
   uint8_t missing_chars = strlen(c);
   uint8_t i = 0;
   char line[chars_per_line + 1];
-  memset(line, 0x0, chars_per_line + 1);
+#if PIN_DEBUG
+  printf("%s: string: %\ns", __func__, c);
+  printf("%s: len: %d\n", __func__, strlen(c));
+  printf("%s: lines: %d\n", __func__, numlines);
+  printf("%s: cperl: %d\n", __func__, chars_per_line);
+#endif
   do {
+      memset(line, 0x0, chars_per_line + 1);
       if (missing_chars > chars_per_line) {
-          memcpy(line, &(c[i]), chars_per_line);
+          strncpy(line, &(c[i]), chars_per_line);
           posx=(x2-x1-chars_per_line*char_width)/2;
           tft_set_cursor_pos(x1+posx,posy+y1);
           tft_puts((char*)line);
