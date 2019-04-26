@@ -33,25 +33,13 @@ For example, if you declare, for a given menu:
 
 The resulting menu would look like:
 
-resulting menu would look like:
+resulting menu would look like (effective interface of Wookey GUI):
 
-.. raw:: html
-
-   <center><pre>
-   +-----------+
-   |           |
-   |  tile 1   |
-   +-----+-----+
-   |     |     |
-   | t 2 | t 3 |
-   +-----+-----+
-   |           |
-   |  tile 4   |
-   |           |
-   |           |
-   +-----------+
-   </center></pre>
-
+.. figure:: img/examples.png
+    :width: 50%
+    :align: center
+    :alt: Examples of GUI usage
+    :figclass: align-center
 
 .. caution::
    By now, reduced sized tiles (for e.g. WIDTH_HALF or WIDTH_THIRD) are supported only for TILE_HEIGHT_STD height)
