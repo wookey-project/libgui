@@ -33,6 +33,24 @@ For example, if you declare, for a given menu:
 
 The resulting menu would look like:
 
+.. raw:: html
+
+   <center><pre>
+   +-----------+
+   |           |
+   |  tile 1   |
+   +-----+-----+
+   |     |     |
+   | t 2 | t 3 |
+   +-----+-----+
+   |           |
+   |  tile 4   |
+   |           |
+   |           |
+   +-----------+
+   </center></pre>
+
+
 resulting menu would look like (effective interface of Wookey GUI):
 
 .. figure:: img/examples.png
