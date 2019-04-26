@@ -51,7 +51,7 @@ The resulting menu would look like:
    </center></pre>
 
 
-resulting menu would look like (effective interface of Wookey GUI):
+The libGUI tiles and menus API rendering looks like (effective interface of Wookey GUI):
 
 .. figure:: img/examples.png
     :width: 50%
