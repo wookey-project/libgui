@@ -753,6 +753,31 @@ void pin_request_string(const char *title,
 }
   }
 
+inline void compute_colline(int &colx, int &coly, int hsize,int hspace, int vsize, int vspace)
+{
+      //Locate the column
+      if(posx>=x1 && posx<=(x1+hsize))
+	colx=0;
+      else if(posx>=(x1+hspace+hsize) && posx<=(x1+hspace+2*hsize))
+	colx=1;
+      else if(posx>=(x1+2*hspace+2*hsize) && posx<=(x1+2*hspace+3*hsize))
+	colx=2;
+      else
+	colx=-1;
+      //Locate the line
+      if(posy>=y1 && posy<=(y1+vsize))
+	coly=-1;
+      else if(posy>=(y1+vspace+vsize) && posy<=(y1+vspace+2*vsize))
+	coly=1;
+      else if(posy>=(y1+2*vspace+2*vsize) && posy<=(y1+2*vspace+3*vsize))
+	coly=2;
+      else if(posy>=(y1+3*vspace+3*vsize) && posy<=(y1+3*vspace+4*vsize))
+	coly=3;
+      else if(posy>=(y1+4*vspace+4*vsize) && posy<=(y1+4*vspace+5*vsize))
+	coly=4;
+      else
+	coly=-1;
+}
 uint8_t pin_request_digits(const char *title,
              uint32_t    title_len __attribute__((unused)),
              int x1,int x2, int y1, int y2,
@@ -813,35 +838,13 @@ uint8_t pin_request_digits(const char *title,
 #if PIN_DEBUG
       printf("posx %d posy %d\n",posx,posy);
 #endif
-      //Locate the column
-      if(posx>=x1 && posx<=(x1+hsize))
-	colx=0;
-      else if(posx>=(x1+hspace+hsize) && posx<=(x1+hspace+2*hsize))
-	colx=1;
-      else if(posx>=(x1+2*hspace+2*hsize) && posx<=(x1+2*hspace+3*hsize))
-	colx=2;
-      else
-	colx=-1;
-      //Locate the line
-      if(posy>=y1 && posy<=(y1+vsize))
-	coly=-1;
-      else if(posy>=(y1+vspace+vsize) && posy<=(y1+vspace+2*vsize))
-	coly=1;
-      else if(posy>=(y1+2*vspace+2*vsize) && posy<=(y1+2*vspace+3*vsize))
-	coly=2;
-      else if(posy>=(y1+3*vspace+3*vsize) && posy<=(y1+3*vspace+4*vsize))
-	coly=3;
-      else if(posy>=(y1+4*vspace+4*vsize) && posy<=(y1+4*vspace+5*vsize))
-	coly=4;
-      else
-	coly=-1;
-
+      compute_colline(colx,coly,hsize,hspace,vsize,vspace);
       //Recolor the lastcase rectangle if it needs to
       mycase=3*(coly-1)+colx;
       if(lastcase>=0 && mycase!=lastcase)
       {
         if ((lasty==4) && (lastx==0))
-        {
+        { //Redraw Cor 
           tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
@@ -849,7 +852,7 @@ uint8_t pin_request_digits(const char *title,
               y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
         }
         else if ((lasty==4) && (lastx==2))
-        {
+        {//Redraw Ok
           tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
@@ -857,7 +860,7 @@ uint8_t pin_request_digits(const char *title,
               y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
         }
         else
-        {
+        {//Redraw another case
           tft_setfg(0,0,0);
           pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
@@ -871,19 +874,20 @@ uint8_t pin_request_digits(const char *title,
           lastcase=-1;
           continue;
         }
-      //Then invert the new location
+      //Then invert the new location if it was not already
       if(lastcase != mycase)
         pin_highlight_case(x1+colx*hspace+colx*hsize+2,
             x1+colx*hspace+colx*hsize+hsize-2,
             y1+coly*vspace+coly*vsize+2,
             y1+coly*vspace+coly*vsize+vsize-2,keys[mycase]);
 #if PIN_DEBUG
-      printf("changement de case lastcase %d mycase %d\n",lastcase,mycase);
+      printf("change of case lastcase %d mycase %d\n",lastcase,mycase);
 #endif
       lastcase=mycase;
       lastx=colx;
       lasty=coly;
     }
+    //We come here whenever the Touch has stopped to be touch
     //Validation at th last position
     //Were we out of the scope ? Then do nothing
     if(lastcase<0)
@@ -894,13 +898,12 @@ uint8_t pin_request_digits(const char *title,
         x1+lastx*hspace+lastx*hsize+hsize-2,
         y1+lasty*vspace+lasty*vsize+2,
         y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase]);
-    //Check for 'Cor' or 'Ok'
+    //Provision for 'Cor' or 'Ok'
 #if PIN_DEBUG
     printf("lastx %d lasty %d\n",lastx,lasty);
 #endif
     if ((lasty==4) && (lastx==0))
     {
-      //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
       tft_setfg(0,0,0);
       pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
           x1+lastx*hspace+lastx*hsize+hsize-2,
@@ -939,5 +942,5 @@ uint8_t pin_request_digits(const char *title,
     //Redraw text footer
     pin_redraw_text_footer(nb_given, 0, DRAW_MODE_PIN, x1+2, x2-hspace-2,
         y1+2, y1+vsize-2);
-  }
+  }//While(1) 
 }
