@@ -9,7 +9,7 @@
 #include "libc/random.h"
 #include "api/gui_pin.h"
 
-#define PIN_DEBUG 0
+#define PIN_DEBUG 1
 
 #define HIGHLIGHT_COLOR WHITE
 #define WHITE 255,255,255
@@ -535,9 +535,9 @@ static void pin_highlight_case(int x1,int x2, int y1, int y2, char *c)
 
 
 void pin_request_string(const char *title,
-                        uint32_t    title_len __attribute__((unused)) /* TODO: future use */,
-                        int x1,int x2, int y1, int y2,
-                        char *string, uint8_t maxlen)
+    uint32_t    title_len __attribute__((unused)) /* TODO: future use */,
+    int x1,int x2, int y1, int y2,
+    char *string, uint8_t maxlen)
 {
   const int hspace=5, vspace=10;
   uint8_t nb_given=0;
@@ -558,11 +558,11 @@ void pin_request_string(const char *title,
   tft_puts((char*)title);
   draw_txt_pad(x1,x2,y1,y2, 0);
 
-//Main interaction loop
+  //Main interaction loop
   while(1) // wait for event
   {
-      int mycase=0;
-      int lastcase=-1;
+    int mycase=0;
+    int lastcase=-1;
     int lastx=0,lasty=0;
     char key[2] = { 0 };
     //Wait for touchscreen to be touched
@@ -595,26 +595,26 @@ void pin_request_string(const char *title,
 #endif
       //Locate the column
       if(posx>=x1 && posx<=(x1+hsize))
-	colx=0;
+        colx=0;
       else if(posx>=(x1+hspace+hsize) && posx<=(x1+hspace+2*hsize))
-	colx=1;
+        colx=1;
       else if(posx>=(x1+2*hspace+2*hsize) && posx<=(x1+2*hspace+3*hsize))
-	colx=2;
+        colx=2;
       else
-	colx=-1;
+        colx=-1;
       //Locate the line
       if(posy>=y1 && posy<=(y1+vsize))
-	coly=-1;
+        coly=-1;
       else if(posy>=(y1+vspace+vsize) && posy<=(y1+vspace+2*vsize))
-	coly=1;
+        coly=1;
       else if(posy>=(y1+2*vspace+2*vsize) && posy<=(y1+2*vspace+3*vsize))
-	coly=2;
+        coly=2;
       else if(posy>=(y1+3*vspace+3*vsize) && posy<=(y1+3*vspace+4*vsize))
-	coly=3;
+        coly=3;
       else if(posy>=(y1+4*vspace+4*vsize) && posy<=(y1+4*vspace+5*vsize))
-	coly=4;
+        coly=4;
       else
-	coly=-1;
+        coly=-1;
 
       //Recolor the lastcase rectangle if it needs to
       mycase=3*(coly-1)+colx;
@@ -624,15 +624,15 @@ void pin_request_string(const char *title,
       {
         if ((lasty==4) && (lastx==0))
         {
-            tft_setfg(0,0,0);
-            pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+          tft_setfg(0,0,0);
+          pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
               y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
         }
         else if ((lasty==4) && (lastx==1))
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -640,7 +640,7 @@ void pin_request_string(const char *title,
         }
         else if ((lasty==4) && (lastx==2))
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -648,7 +648,7 @@ void pin_request_string(const char *title,
         }
         else
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -656,8 +656,8 @@ void pin_request_string(const char *title,
         }
       }
       if (posx > x2 - 60 && posx < x2 &&
-              posy > y1 && posy < y1 + 58) { // is okay button ?
-          return;
+          posy > y1 && posy < y1 + 58) { // is okay button ?
+        return;
       }
       //Is touch currently out of range
       if( colx==-1 || coly==-1)
@@ -666,10 +666,11 @@ void pin_request_string(const char *title,
         continue;
       }
       //Then invert the new location
-      pin_highlight_case(x1+colx*hspace+colx*hsize+2,
-          x1+colx*hspace+colx*hsize+hsize-2,
-          y1+coly*vspace+coly*vsize+2,
-          y1+coly*vspace+coly*vsize+vsize-2,key);
+      if(lastcase != mycase)
+        pin_highlight_case(x1+colx*hspace+colx*hsize+2,
+            x1+colx*hspace+colx*hsize+hsize-2,
+            y1+coly*vspace+coly*vsize+2,
+            y1+coly*vspace+coly*vsize+vsize-2,key);
 #if PIN_DEBUG
       printf("changement de case lastcase %d mycase %d\n",lastcase,mycase);
 #endif
@@ -680,77 +681,77 @@ void pin_request_string(const char *title,
     //Validation at th last position
     //Were we out of the scope ? Then do nothing
     if(lastcase<0) {
-        continue;
+      continue;
     }
     //Otherwise redraw last case as normal
     pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
-	x1+lastx*hspace+lastx*hsize+hsize-2,
-	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, key);
+        x1+lastx*hspace+lastx*hsize+hsize-2,
+        y1+lasty*vspace+lasty*vsize+2,
+        y1+lasty*vspace+lasty*vsize+vsize-2, key);
     //Check for 'Cor' or 'Ok'
 #if PIN_DEBUG
-    printf("lastx %d lasty %d\n",lastx,lasty);
+  printf("lastx %d lasty %d\n",lastx,lasty);
 #endif
-    if ((lasty==4) && (lastx==0))
-    {
-        if (offset == 0) {
-            offset = 9;
-        } else {
-          offset--;
-        }
-        //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
-        tft_setfg(0,0,0);
-	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-	x1+lastx*hspace+lastx*hsize+hsize-2,
-	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, "<<",touched_color.r, touched_color.g, touched_color.b);
-      //Last touch was for correcting
-      draw_txt_pad(x1,x2,y1,y2, offset);
-    }
-    else if ((lasty==4) && (lastx==2))
-    {
-        if (offset == 9) {
-            offset = 0;
-        } else {
-            offset++;
-        }
-        //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
-        tft_setfg(0,0,0);
-        pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-                x1+lastx*hspace+lastx*hsize+hsize-2,
-                y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, ">>",touched_color.r, touched_color.g, touched_color.b);
-        //Last touch was Ok
-#if PIN_DEBUG
-        printf("nb_given %d nb_pin %d\n",nb_given,maxlen);
-#endif
-      draw_txt_pad(x1,x2,y1,y2, offset);
-    } else if ((lasty==4) && (lastx==1)) {
-        /* correction */
-        tft_setfg(0,0,0);
-        pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-                x1+lastx*hspace+lastx*hsize+hsize-2,
-                y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
-        if(nb_given>0)
-        {
-            string[nb_given]=0;
-            nb_given--;//just to catch the ++ of pin_redraw_text_footer
-#if PIN_DEBUG
-            printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
-#endif
-        }
-
+  if ((lasty==4) && (lastx==0))
+  {
+    if (offset == 0) {
+      offset = 9;
     } else {
-        if (nb_given < maxlen) {
-          string[nb_given++]=key[0];
-        }
+      offset--;
     }
-    //Redraw text footer
-    pin_redraw_text_footer(nb_given, string, DRAW_MODE_PETPIN, x1+2, x2-hspace-62,
-	    y1+2, y1+vsize-2);
+    //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
+    tft_setfg(0,0,0);
+    pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+        x1+lastx*hspace+lastx*hsize+hsize-2,
+        y1+lasty*vspace+lasty*vsize+2,
+        y1+lasty*vspace+lasty*vsize+vsize-2, "<<",touched_color.r, touched_color.g, touched_color.b);
+    //Last touch was for correcting
+    draw_txt_pad(x1,x2,y1,y2, offset);
   }
+  else if ((lasty==4) && (lastx==2))
+  {
+    if (offset == 9) {
+      offset = 0;
+    } else {
+      offset++;
+    }
+    //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
+    tft_setfg(0,0,0);
+    pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+        x1+lastx*hspace+lastx*hsize+hsize-2,
+        y1+lasty*vspace+lasty*vsize+2,
+        y1+lasty*vspace+lasty*vsize+vsize-2, ">>",touched_color.r, touched_color.g, touched_color.b);
+    //Last touch was Ok
+#if PIN_DEBUG
+    printf("nb_given %d nb_pin %d\n",nb_given,maxlen);
+#endif
+    draw_txt_pad(x1,x2,y1,y2, offset);
+  } else if ((lasty==4) && (lastx==1)) {
+    /* correction */
+    tft_setfg(0,0,0);
+    pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+        x1+lastx*hspace+lastx*hsize+hsize-2,
+        y1+lasty*vspace+lasty*vsize+2,
+        y1+lasty*vspace+lasty*vsize+vsize-2, key,touched_color.r, touched_color.g, touched_color.b);
+    if(nb_given>0)
+    {
+      string[nb_given]=0;
+      nb_given--;//just to catch the ++ of pin_redraw_text_footer
+#if PIN_DEBUG
+      printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
+#endif
+    }
+
+  } else {
+    if (nb_given < maxlen) {
+      string[nb_given++]=key[0];
+    }
+  }
+  //Redraw text footer
+  pin_redraw_text_footer(nb_given, string, DRAW_MODE_PETPIN, x1+2, x2-hspace-62,
+      y1+2, y1+vsize-2);
 }
+  }
 
 uint8_t pin_request_digits(const char *title,
              uint32_t    title_len __attribute__((unused)),
@@ -841,7 +842,7 @@ uint8_t pin_request_digits(const char *title,
       {
         if ((lasty==4) && (lastx==0))
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -849,7 +850,7 @@ uint8_t pin_request_digits(const char *title,
         }
         else if ((lasty==4) && (lastx==2))
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
@@ -857,24 +858,25 @@ uint8_t pin_request_digits(const char *title,
         }
         else
         {
-            tft_setfg(0,0,0);
+          tft_setfg(0,0,0);
           pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
               x1+lastx*hspace+lastx*hsize+hsize-2,
               y1+lasty*vspace+lasty*vsize+2,
               y1+lasty*vspace+lasty*vsize+vsize-2,keys[lastcase]);
         }
       }
-      //Is touch currently out of range
-      if( colx==-1 || coly==-1)
-      {
-        lastcase=-1;
-        continue;
-      }
+        //Is touch currently out of range
+        if( colx==-1 || coly==-1)
+        {
+          lastcase=-1;
+          continue;
+        }
       //Then invert the new location
-      pin_highlight_case(x1+colx*hspace+colx*hsize+2,
-          x1+colx*hspace+colx*hsize+hsize-2,
-          y1+coly*vspace+coly*vsize+2,
-          y1+coly*vspace+coly*vsize+vsize-2,keys[mycase]);
+      if(lastcase != mycase)
+        pin_highlight_case(x1+colx*hspace+colx*hsize+2,
+            x1+colx*hspace+colx*hsize+hsize-2,
+            y1+coly*vspace+coly*vsize+2,
+            y1+coly*vspace+coly*vsize+vsize-2,keys[mycase]);
 #if PIN_DEBUG
       printf("changement de case lastcase %d mycase %d\n",lastcase,mycase);
 #endif
@@ -889,53 +891,53 @@ uint8_t pin_request_digits(const char *title,
     //Otherwise redraw last case as normal
     tft_setfg(0,0,0);
     pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
-	x1+lastx*hspace+lastx*hsize+hsize-2,
-	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase]);
+        x1+lastx*hspace+lastx*hsize+hsize-2,
+        y1+lasty*vspace+lasty*vsize+2,
+        y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase]);
     //Check for 'Cor' or 'Ok'
 #if PIN_DEBUG
     printf("lastx %d lasty %d\n",lastx,lasty);
 #endif
     if ((lasty==4) && (lastx==0))
     {
-        //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
-        tft_setfg(0,0,0);
-	 pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-	x1+lastx*hspace+lastx*hsize+hsize-2,
-	y1+lasty*vspace+lasty*vsize+2,
-	y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
+      //tft_setbg(cor_color.r, cor_color.g, cor_color.b);
+      tft_setfg(0,0,0);
+      pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+          x1+lastx*hspace+lastx*hsize+hsize-2,
+          y1+lasty*vspace+lasty*vsize+2,
+          y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
       //Last touch was for correcting
       if(nb_given>0)
       {
-	mypin[nb_given]=0;
-	nb_given--;//just to catch the ++ of pin_redraw_text_footer
+        mypin[nb_given]=0;
+        nb_given--;//just to catch the ++ of pin_redraw_text_footer
 #if PIN_DEBUG
-      printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
+        printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
 #endif
       }
     }
     else if ((lasty==4) && (lastx==2))
     {
-        //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
-        tft_setfg(0,0,0);
-        pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-                x1+lastx*hspace+lastx*hsize+hsize-2,
-                y1+lasty*vspace+lasty*vsize+2,
-                y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
-        //Last touch was Ok
+      //tft_setbg(ok_color.r, ok_color.g, ok_color.b);
+      tft_setfg(0,0,0);
+      pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
+          x1+lastx*hspace+lastx*hsize+hsize-2,
+          y1+lasty*vspace+lasty*vsize+2,
+          y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
+      //Last touch was Ok
 #if PIN_DEBUG
-        printf("nb_given %d nb_pin %d\n",nb_given,max_pin_len);
+      printf("nb_given %d nb_pin %d\n",nb_given,max_pin_len);
 #endif
-        //if(nb_given == nb_pin), always return when ok is pushed
-            return nb_given;
+      //if(nb_given == nb_pin), always return when ok is pushed
+      return nb_given;
     }
     else
     {
-        if(nb_given<max_pin_len)
-            mypin[nb_given++]=keys[lastcase][0];
+      if(nb_given<max_pin_len)
+        mypin[nb_given++]=keys[lastcase][0];
     }
     //Redraw text footer
     pin_redraw_text_footer(nb_given, 0, DRAW_MODE_PIN, x1+2, x2-hspace-2,
-	    y1+2, y1+vsize-2);
+        y1+2, y1+vsize-2);
   }
 }
