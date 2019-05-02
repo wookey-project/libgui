@@ -620,7 +620,7 @@ void gui_get_events(void)
         sys_sleep(10, SLEEP_MODE_INTERRUPTIBLE);
 
         /* Wait loop for touchscreen to be touched */
-        while (!(touch_refresh_pos(),touch_is_touched())) {
+        while (!(touch_is_touched())) {
             /* handling external events (IPC...) */
             if (external_events_cb) {
                 /* external events may impact the graphical state, which means that

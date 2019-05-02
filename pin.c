@@ -9,6 +9,8 @@
 #include "libc/random.h"
 #include "api/gui_pin.h"
 
+#define PIN_DEBUG 0
+
 #define HIGHLIGHT_COLOR WHITE
 #define WHITE 255,255,255
 #define BLACK 0,0,0
@@ -396,8 +398,8 @@ uint8_t pin_request_string_validation(const char *msg,
       y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ok");
 
+  touch_read_X_DFR();//Ensures that PenIRQ is enabled
   while (1) {
-    touch_read_X_DFR();//Ensures that PenIRQ is enabled
     /*
      * Between touch_read_X_DFR and touch_is_touched, we need to wait a little
      * or touch_is_touched() will return an invalid value
@@ -408,8 +410,6 @@ uint8_t pin_request_string_validation(const char *msg,
         touch_enable_exti();
         sys_yield();
     }
-    //Refresh the actual positions
-    touch_refresh_pos();
     //Follow the motion on the screen
     while(touch_refresh_pos(),touch_is_touched())
     {
@@ -570,15 +570,18 @@ void pin_request_string(const char *title,
     /*
      * Between touch_read_X_DFR and touch_is_touched, we need to wait a little
      * or touch_is_touched() will return an invalid value
+     * See datasheet P19
      */
     sys_sleep(10, SLEEP_MODE_INTERRUPTIBLE);
 
     while(!(touch_is_touched())) {
-        touch_enable_exti();
-        sys_yield();
+      touch_read_12bits(S_BIT | A0_BIT);//Perfoms one conversion and power off device
+      //Ensures that PenIRQ in enabled
+      touch_enable_exti();
+      sys_yield();
     }
     //Refresh the actual positions
-    touch_refresh_pos();
+    //touch_refresh_pos();
     //Follow the motion on the screen
     while(touch_refresh_pos(),touch_is_touched())
     {
@@ -734,7 +737,7 @@ void pin_request_string(const char *title,
             string[nb_given]=0;
             nb_given--;//just to catch the ++ of pin_redraw_text_footer
 #if PIN_DEBUG
-            printf("nb_given %d max_pin_len %d\n",nb_given,nb_pin);
+            printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
 #endif
         }
 
@@ -781,6 +784,7 @@ uint8_t pin_request_digits(const char *title,
   tft_puts((char*)title);
 
   draw_pin(x1,x2,y1,y2);
+  touch_read_X_DFR();//Ensures that PenIRQ is enabled
 //Main interaction loop
   while(1)
   {
@@ -788,13 +792,15 @@ uint8_t pin_request_digits(const char *title,
     int lastcase=-1;
     int lastx=0,lasty=0;
     //Wait for touchscreen to be touched
-    touch_read_X_DFR();//Ensures that PenIRQ is enabled
     while(!(touch_is_touched())) {
+      touch_read_12bits(S_BIT | A0_BIT);//Perfom one conversion and power off device
+                                        //Ensures that PenIRQ in enabled
+#if PIN_DEBUG
+      printf("sys_yield \n");
+#endif
         touch_enable_exti();
         sys_yield();
     }
-    //Refresh the actual positions
-    touch_refresh_pos();
     //Follow the motion on the screen
     while(touch_refresh_pos(),touch_is_touched())
     {
@@ -904,7 +910,7 @@ uint8_t pin_request_digits(const char *title,
 	mypin[nb_given]=0;
 	nb_given--;//just to catch the ++ of pin_redraw_text_footer
 #if PIN_DEBUG
-      printf("nb_given %d max_pin_len %d\n",nb_given,nb_pin);
+      printf("nb_given %d max_pin_len %d\n",nb_given,nb_given);
 #endif
       }
     }
