@@ -753,30 +753,31 @@ void pin_request_string(const char *title,
 }
   }
 
-inline void compute_colline(int &colx, int &coly, int hsize,int hspace, int vsize, int vspace)
+void compute_colx_coly(int *colx, int *coly, int x1, int y1, int posx, int posy, 
+            int hsize,int hspace, int vsize, int vspace)
 {
       //Locate the column
       if(posx>=x1 && posx<=(x1+hsize))
-	colx=0;
+	*colx=0;
       else if(posx>=(x1+hspace+hsize) && posx<=(x1+hspace+2*hsize))
-	colx=1;
+	*colx=1;
       else if(posx>=(x1+2*hspace+2*hsize) && posx<=(x1+2*hspace+3*hsize))
-	colx=2;
+	*colx=2;
       else
-	colx=-1;
+	*colx=-1;
       //Locate the line
       if(posy>=y1 && posy<=(y1+vsize))
-	coly=-1;
+	*coly=-1;
       else if(posy>=(y1+vspace+vsize) && posy<=(y1+vspace+2*vsize))
-	coly=1;
+	*coly=1;
       else if(posy>=(y1+2*vspace+2*vsize) && posy<=(y1+2*vspace+3*vsize))
-	coly=2;
+	*coly=2;
       else if(posy>=(y1+3*vspace+3*vsize) && posy<=(y1+3*vspace+4*vsize))
-	coly=3;
+	*coly=3;
       else if(posy>=(y1+4*vspace+4*vsize) && posy<=(y1+4*vspace+5*vsize))
-	coly=4;
+	*coly=4;
       else
-	coly=-1;
+	*coly=-1;
 }
 uint8_t pin_request_digits(const char *title,
              uint32_t    title_len __attribute__((unused)),
@@ -838,7 +839,7 @@ uint8_t pin_request_digits(const char *title,
 #if PIN_DEBUG
       printf("posx %d posy %d\n",posx,posy);
 #endif
-      compute_colline(colx,coly,hsize,hspace,vsize,vspace);
+      compute_colx_coly(&colx,&coly,x1,y1,posx,posy,hsize,hspace,vsize,vspace);
       //Recolor the lastcase rectangle if it needs to
       mycase=3*(coly-1)+colx;
       if(lastcase>=0 && mycase!=lastcase)
