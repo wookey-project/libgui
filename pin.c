@@ -9,7 +9,7 @@
 #include "libc/random.h"
 #include "api/gui_pin.h"
 
-#define PIN_DEBUG 1
+#define PIN_DEBUG 0
 
 #define HIGHLIGHT_COLOR WHITE
 #define WHITE 255,255,255
@@ -779,6 +779,69 @@ void compute_colx_coly(int *colx, int *coly, int x1, int y1, int posx, int posy,
       else
 	*coly=-1;
 }
+
+void follow_motion(int *lastx, int *lasty, int *lastcase, int x1, int y1, 
+                  int hsize, int hspace, int vsize, int vspace)
+{
+  int mycase=0;
+      int colx,coly;
+      int posx,posy;
+      //touch_refresh_pos();
+      posy=touch_getx();
+      posx=touch_gety();
+#if PIN_DEBUG
+      printf("posx %d posy %d\n",posx,posy);
+#endif
+      compute_colx_coly(&colx,&coly,x1,y1,posx,posy,hsize,hspace,vsize,vspace);
+      //Recolor the lastcase rectangle if it needs to
+      mycase=3*(coly-1)+colx;
+      if(*lastcase>=0 && mycase!=*lastcase)
+      {
+        if ((*lasty==4) && (*lastx==0))
+        { //Redraw Cor 
+          tft_setfg(0,0,0);
+          pin_draw_case(x1+*lastx*hspace+*lastx*hsize+2,
+              x1+*lastx*hspace+*lastx*hsize+hsize-2,
+              y1+*lasty*vspace+*lasty*vsize+2,
+              y1+*lasty*vspace+*lasty*vsize+vsize-2, keys[*lastcase],cor_color.r, cor_color.g, cor_color.b);
+        }
+        else if ((*lasty==4) && (*lastx==2))
+        {//Redraw Ok
+          tft_setfg(0,0,0);
+          pin_draw_case(x1+*lastx*hspace+*lastx*hsize+2,
+              x1+*lastx*hspace+*lastx*hsize+hsize-2,
+              y1+*lasty*vspace+*lasty*vsize+2,
+              y1+*lasty*vspace+*lasty*vsize+vsize-2, keys[*lastcase],ok_color.r, ok_color.g, ok_color.b);
+        }
+        else
+        {//Redraw another case
+          tft_setfg(0,0,0);
+          pin_normal_case(x1+*lastx*hspace+*lastx*hsize+2,
+              x1+*lastx*hspace+*lastx*hsize+hsize-2,
+              y1+*lasty*vspace+*lasty*vsize+2,
+              y1+*lasty*vspace+*lasty*vsize+vsize-2,keys[*lastcase]);
+        }
+      }
+        //Is touch currently out of range
+        if( colx==-1 || coly==-1)
+        {
+          *lastcase=-1;
+          return;
+          //continue;
+        }
+      //Then invert the new location if it was not already
+      if(*lastcase != mycase)
+        pin_highlight_case(x1+colx*hspace+colx*hsize+2,
+            x1+colx*hspace+colx*hsize+hsize-2,
+            y1+coly*vspace+coly*vsize+2,
+            y1+coly*vspace+coly*vsize+vsize-2,keys[mycase]);
+#if PIN_DEBUG
+      printf("change of case lastcase %d mycase %d\n",*lastcase,mycase);
+#endif
+      *lastcase=mycase;
+      *lastx=colx;
+      *lasty=coly;
+}
 uint8_t pin_request_digits(const char *title,
              uint32_t    title_len __attribute__((unused)),
              int x1,int x2, int y1, int y2,
@@ -815,7 +878,6 @@ uint8_t pin_request_digits(const char *title,
 //Main interaction loop
   while(1)
   {
-    int mycase=0;
     int lastcase=-1;
     int lastx=0,lasty=0;
     //Wait for touchscreen to be touched
@@ -831,62 +893,7 @@ uint8_t pin_request_digits(const char *title,
     //Follow the motion on the screen
     while(touch_refresh_pos(),touch_is_touched())
     {
-      int colx,coly;
-      int posx,posy;
-      //touch_refresh_pos();
-      posy=touch_getx();
-      posx=touch_gety();
-#if PIN_DEBUG
-      printf("posx %d posy %d\n",posx,posy);
-#endif
-      compute_colx_coly(&colx,&coly,x1,y1,posx,posy,hsize,hspace,vsize,vspace);
-      //Recolor the lastcase rectangle if it needs to
-      mycase=3*(coly-1)+colx;
-      if(lastcase>=0 && mycase!=lastcase)
-      {
-        if ((lasty==4) && (lastx==0))
-        { //Redraw Cor 
-          tft_setfg(0,0,0);
-          pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-              x1+lastx*hspace+lastx*hsize+hsize-2,
-              y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],cor_color.r, cor_color.g, cor_color.b);
-        }
-        else if ((lasty==4) && (lastx==2))
-        {//Redraw Ok
-          tft_setfg(0,0,0);
-          pin_draw_case(x1+lastx*hspace+lastx*hsize+2,
-              x1+lastx*hspace+lastx*hsize+hsize-2,
-              y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2, keys[lastcase],ok_color.r, ok_color.g, ok_color.b);
-        }
-        else
-        {//Redraw another case
-          tft_setfg(0,0,0);
-          pin_normal_case(x1+lastx*hspace+lastx*hsize+2,
-              x1+lastx*hspace+lastx*hsize+hsize-2,
-              y1+lasty*vspace+lasty*vsize+2,
-              y1+lasty*vspace+lasty*vsize+vsize-2,keys[lastcase]);
-        }
-      }
-        //Is touch currently out of range
-        if( colx==-1 || coly==-1)
-        {
-          lastcase=-1;
-          continue;
-        }
-      //Then invert the new location if it was not already
-      if(lastcase != mycase)
-        pin_highlight_case(x1+colx*hspace+colx*hsize+2,
-            x1+colx*hspace+colx*hsize+hsize-2,
-            y1+coly*vspace+coly*vsize+2,
-            y1+coly*vspace+coly*vsize+vsize-2,keys[mycase]);
-#if PIN_DEBUG
-      printf("change of case lastcase %d mycase %d\n",lastcase,mycase);
-#endif
-      lastcase=mycase;
-      lastx=colx;
-      lasty=coly;
+      follow_motion(&lastx, &lasty, &lastcase, x1, y1, hsize, hspace, vsize, vspace);
     }
     //We come here whenever the Touch has stopped to be touch
     //Validation at th last position
