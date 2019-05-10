@@ -1,3 +1,5 @@
+.. _lib_gui:
+
 The Graphic library
 ===================
 
