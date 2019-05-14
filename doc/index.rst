@@ -1,5 +1,8 @@
 .. _lib_gui:
 
+
+.. highlight:: c
+
 The Graphic library
 ===================
 
