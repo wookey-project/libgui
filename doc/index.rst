@@ -6,7 +6,7 @@
 The Graphic library
 ===================
 
-.. content::
+.. contents::
 
 This library is an easy to use, tile-based graphical interface manager. It aim
 to support small screens with potential low refresh speed.
