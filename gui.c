@@ -191,6 +191,7 @@ gui_error_t gui_declare_menu(const char *name, menu_desc_t *menu_desc)
         return GUI_ERR_INVAL;
     }
     if (current_menu_id == MAX_MENUS - 1) {
+        printf("full: current_menu_id: %d, MAX_MENU: %d\n", current_menu_id, MAX_MENUS - 1);
         return GUI_ERR_FULL;
     }
 
