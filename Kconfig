@@ -27,7 +27,7 @@ endchoice
 
 config USR_LIB_GUI_MAX_MENU_NUMBER
    int "Max number of declarable menus"
-   default 10
+   default 12
    ---help---
       Maximum number of menus that can be declared
 
