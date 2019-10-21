@@ -611,16 +611,13 @@ void gui_get_events(void)
             draw_gui();
             gui_refresh_needed = false;
         }
+
         if (!touch_locked) {
-          touch_read_X_DFR();/* Ensures that PenIRQ is enabled */
+            touch_reactivate_PENIRQ();
         }
-        /*
-         * Between touch_read_X_DFR and touch_is_touched, we need to wait a little
-         * or touch_is_touched() will return an invalid value
-         */
-        sys_sleep(10, SLEEP_MODE_INTERRUPTIBLE);
 
         /* Wait loop for touchscreen to be touched */
+        //while (!(touch_reactivate_PENIRQ(),touch_is_touched())) {
         while (!(touch_is_touched())) {
             /* handling external events (IPC...) */
             if (external_events_cb) {
@@ -634,11 +631,12 @@ void gui_get_events(void)
             /* sleeping while no event arrise, up to 1 second */
             sys_sleep(1000, SLEEP_MODE_INTERRUPTIBLE);
         }
-        //Follow the motion on the screen
+        /*
+         * Follow the motion on the screen
+        */
         while (touch_refresh_pos(),touch_is_touched())
         {
             int posx,posy;
-            //touch_refresh_pos();
             posy=touch_getx();
             posx=touch_gety();
 
