@@ -398,7 +398,7 @@ uint8_t pin_request_string_validation(const char *msg,
       y1+4*vspace+(4)*vsize+vsize/2-font_height/4+font_blankskip/4);
   tft_puts("Ok");
 
-  touch_read_X_DFR();//Ensures that PenIRQ is enabled
+  touch_reactivate_PENIRQ();
   while (1) {
     /*
      * Between touch_read_X_DFR and touch_is_touched, we need to wait a little
@@ -753,7 +753,7 @@ void pin_request_string(const char *title,
 }
   }
 
-void compute_colx_coly(int *colx, int *coly, int x1, int y1, int posx, int posy, 
+void compute_colx_coly(int *colx, int *coly, int x1, int y1, int posx, int posy,
             int hsize,int hspace, int vsize, int vspace)
 {
       //Locate the column
@@ -780,7 +780,7 @@ void compute_colx_coly(int *colx, int *coly, int x1, int y1, int posx, int posy,
 	*coly=-1;
 }
 
-void follow_motion(int *lastx, int *lasty, int *lastcase, int x1, int y1, 
+void follow_motion(int *lastx, int *lasty, int *lastcase, int x1, int y1,
                   int hsize, int hspace, int vsize, int vspace)
 {
   int mycase=0;
@@ -798,7 +798,7 @@ void follow_motion(int *lastx, int *lasty, int *lastcase, int x1, int y1,
       if(*lastcase>=0 && mycase!=*lastcase)
       {
         if ((*lasty==4) && (*lastx==0))
-        { //Redraw Cor 
+        { //Redraw Cor
           tft_setfg(0,0,0);
           pin_draw_case(x1+*lastx*hspace+*lastx*hsize+2,
               x1+*lastx*hspace+*lastx*hsize+hsize-2,
@@ -950,5 +950,5 @@ uint8_t pin_request_digits(const char *title,
     //Redraw text footer
     pin_redraw_text_footer(nb_given, 0, DRAW_MODE_PIN, x1+2, x2-hspace-2,
         y1+2, y1+vsize-2);
-  }//While(1) 
+  }//While(1)
 }
