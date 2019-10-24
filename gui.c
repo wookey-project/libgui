@@ -36,7 +36,7 @@ static volatile menu_desc_t default_menu = 0;
 
 cb_external_events external_events_cb = 0;
 
-static bool touch_locked = false;
+static volatile bool touch_locked = false;
 
 /* menu and tile descriptors start at 1. 0 permit to detect empty fields */
 menu_desc_t current_menu_id = 1;
