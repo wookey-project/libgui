@@ -10,6 +10,7 @@
 /* local utilities (tft, pin) */
 #include "api/gui_pin.h"
 #include "api/libgui.h"
+#include "libc/sanhandlers.h"
 
 /* tile height is defined as 100 pixels */
 #define TILE_HEIGHT 90
@@ -101,15 +102,25 @@ static bool gui_tile_touched(tile_t* tile, int x, int y)
  */
 static void gui_execute_tile(tile_t* tile)
 {
+    if(tile == NULL){
+	return;
+    }
     switch (tile->action.type) {
-        case TILE_ACTION_MENU:
+        case TILE_ACTION_MENU:{
             current_menu_tmp = tile->action.target.menu;
             gui_refresh_needed = true;
             break;
-        case TILE_ACTION_CB:
+	}
+        case TILE_ACTION_CB:{
+	    /* Sanity check our callback */
+	    if(handler_sanity_check((void*)tile->action.target.callback)){
+                sys_exit();
+		return;
+	    }
             tile->action.target.callback(tile->id);
             gui_refresh_needed = true;
             break;
+	}
         case TILE_ACTION_NONE:
             break;
         default:
@@ -294,12 +305,19 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
 
     tile->action.type = action->type;
     switch (action->type) {
-        case TILE_ACTION_MENU:
+        case TILE_ACTION_MENU:{
             tile->action.target.menu = action->target.menu;
             break;
-        case TILE_ACTION_CB:
+	}
+        case TILE_ACTION_CB:{
+	    /* Sanity check our callback */
+	    if(handler_sanity_check((void*)action->target.callback)){
+                sys_exit();
+		goto err_inval;
+	    }
             tile->action.target.callback = action->target.callback;
             break;
+	}
         case TILE_ACTION_NONE:
             break;
         default:
@@ -623,7 +641,14 @@ void gui_get_events(void)
             if (external_events_cb) {
                 /* external events may impact the graphical state, which means that
                  * the GUI has to be refreshed */
-                external_events_cb(&gui_refresh_needed);
+		/* Sanity check before calling our callback */
+		if(handler_sanity_check((void*)external_events_cb)){
+			sys_exit();
+			return;
+		}
+		else{
+	                external_events_cb(&gui_refresh_needed);
+		}
             }
             if (!touch_locked) {
                 touch_enable_exti();
