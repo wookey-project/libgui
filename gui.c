@@ -113,8 +113,7 @@ static void gui_execute_tile(tile_t* tile)
 	}
         case TILE_ACTION_CB:{
 	    /* Sanity check our callback */
-	    if(handler_sanity_check((void*)tile->action.target.callback)){
-                sys_exit();
+	    if(handler_sanity_check_with_panic((physaddr_t)tile->action.target.callback)){
 		return;
 	    }
             tile->action.target.callback(tile->id);
@@ -311,8 +310,7 @@ gui_error_t gui_declare_tile(menu_desc_t        menu,
 	}
         case TILE_ACTION_CB:{
 	    /* Sanity check our callback */
-	    if(handler_sanity_check((void*)action->target.callback)){
-                sys_exit();
+	    if(handler_sanity_check_with_panic((physaddr_t)action->target.callback)){
 		goto err_inval;
 	    }
             tile->action.target.callback = action->target.callback;
@@ -642,8 +640,7 @@ void gui_get_events(void)
                 /* external events may impact the graphical state, which means that
                  * the GUI has to be refreshed */
 		/* Sanity check before calling our callback */
-		if(handler_sanity_check((void*)external_events_cb)){
-			sys_exit();
+		if(handler_sanity_check_with_panic((physaddr_t)external_events_cb)){
 			return;
 		}
 		else{
