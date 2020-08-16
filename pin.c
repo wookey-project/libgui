@@ -146,8 +146,9 @@ static void dopermu(char **mykeys, const uint32_t mysize)
     uint32_t rand;
     char *stock;
     get_random((unsigned char*)&rand,sizeof(uint32_t));
-    //rand%=i; this will not work on cortex m4 gcc --nobuiltins
-    for(rand&=0xff; rand>=(mysize-i);rand/=(mysize-i)); //Truncate then modulo
+    //rand %= (mysize - i); this will not work on cortex m4 gcc --nobuiltins
+    // Instead compute it with the remainded
+    rand = (rand - ((mysize - i) * (rand / (mysize - i))));
     stock=mykeys[rand+i];
     mykeys[rand+i]=mykeys[i];
     mykeys[i]=stock;
